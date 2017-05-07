@@ -1,14 +1,14 @@
 // @flow
 
 import 'whatwg-fetch';
+import Cookies from 'cookies-js';
+
 import type { Configuration } from './Configuration.js';
 import { authAPIURL } from './Configuration.js';
-import Cookies from 'cookies-js';
 
 type AuthReponse = {
   authorization_token: ?string;
 }
-
 
 const tokenKey = 'token';
 

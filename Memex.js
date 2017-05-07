@@ -1,6 +1,7 @@
 // @flow
 
 import 'whatwg-fetch';
+
 import { Auth } from './Auth.js';
 
 import Media from './data/Media.js';

@@ -19,4 +19,10 @@
     "url": "https://github.com/memexapp/memex-js-sdk/issues"
   },
   "homepage": "https://github.com/memexapp/memex-js-sdk#readme"
+  "dependencies": {
+    "base-64": "^0.1.0",
+    "utf8": "^2.1.2",
+    "whatwg-fetch": "^2.0.3",
+    "cookies-js": "^1.2.3",
+  },
 }
