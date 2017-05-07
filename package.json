@@ -1,0 +1,22 @@
+{
+  "name": "memex-js-sdk",
+  "version": "1.0.0",
+  "description": "Memex SDK",
+  "main": "Memex.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/memexapp/memex-js-sdk.git"
+  },
+  "keywords": [
+    "memex"
+  ],
+  "author": "Adam Zdara",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/memexapp/memex-js-sdk/issues"
+  },
+  "homepage": "https://github.com/memexapp/memex-js-sdk#readme"
+}
