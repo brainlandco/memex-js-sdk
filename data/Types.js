@@ -31,12 +31,6 @@ export const mediaDataStates = {
   dataValid: 2
 };
 
-export type CreatorType = number;
-export const creatorTypes = {
-  user: 0,
-  system: 1
-};
-
 export type EntityState = number;
 export const entityStates = {
   unknown: -1,

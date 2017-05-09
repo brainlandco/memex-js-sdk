@@ -1,7 +1,7 @@
 // @flow
 
-import type { MediaType, CreatorType, MediaDataState, EntityState } from './Types.js';
-import { creatorTypes, mediaDataStates, mediaTypes, entityStates } from './Types.js';
+import type { MediaType, MediaDataState, EntityState } from './Types.js';
+import { mediaDataStates, mediaTypes, entityStates } from './Types.js';
 
 import base64 from 'base-64';
 import utf8 from 'utf8';
@@ -14,13 +14,9 @@ export default class Media {
   embedData: ?ArrayBuffer;
   dataDownloadURL: ?string;
   dataState: MediaDataState;
-  createdBy: CreatorType;
-  managedBy: CreatorType;
 
   constructor() {
     this.state = entityStates.unknown;
-    this.createdBy = creatorTypes.user;
-    this.managedBy = creatorTypes.user;
     this.dataState = mediaDataStates.unknown;
     this.mediaType = mediaTypes.source;
   }
@@ -70,8 +66,6 @@ export default class Media {
   fromJSON(json: Object) {
     this.muid = json.muid;
     this.state = json.state;
-    this.createdBy = json.created_by;
-    this.managedBy = json.managed_by;
     this.mediaType = json.type;
     this.dataState = json.data_state;
     if (json.embeded_data != null) {
@@ -84,8 +78,6 @@ export default class Media {
 
   toJSON(): Object {
     return {
-      created_by: 0,
-      managed_by: 0,
       type: this.mediaType,
       data_download_url: this.dataDownloadURL,
       embeded_data: this.base64EmbedData(),
