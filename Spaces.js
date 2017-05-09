@@ -8,7 +8,7 @@ import Media from './data/Media.js';
 import Space from './data/Space.js';
 import Link from './data/Link.js';
 import { mediaTypes, mediaDataStates, spaceTypes } from './data/Types.js';
-import type Configuration from './Configuration.js';
+import type { Configuration } from './Configuration.js';
 import { spacesAPIURL, environmentTypes } from './Configuration.js';
 
 const methods = {
