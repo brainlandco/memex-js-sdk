@@ -15,7 +15,7 @@ const methods = {
   GET: 'GET',
   POST: 'POST'
 };
-type Method = $Keys<typeof methods>;
+type Method = string;
 
 export class Spaces {
 
@@ -23,26 +23,27 @@ export class Spaces {
   _auth: Auth;
 
   constructor() {
+    this._configuration = {
+      clientToken: "",
+      environment: environmentTypes.production
+    }
   }
 
   _isConfigured(): bool {
-    if (this._configuration == null) {
-      console.error("Missing Memex configuration, call sharedMemex.configure(...)");
+    if (this._configuration.clientToken === "") {
+      console.error("Missing Memex configuration, call Memex.client.setClientToken('<Your app token>')");
       return false;
     }
     return true;
   }
 
   setClientToken(clientToken: string) {
-    this._configure({
-      clientToken: clientToken,
-      environment: environmentTypes.production
-    });
+    this._configuration.clientToken = clientToken;
   }
 
-  _configure(configuration: Configuration) {
-    this._configuration = configuration;
-    this._auth = new Auth(this._authAPIURL(configuration.environment));
+  _setEnvironment(environment: EnvironmentType) {
+    this._configuration.environment = environment;
+    this._auth = new Auth(this._authAPIURL(environment));
   }
 
   _authAPIURL(environment: EnvironmentType): string {
@@ -76,14 +77,23 @@ export class Spaces {
   }
 
   isLoggedIn(): bool {
+    if (!this._isConfigured()) {
+      return false;
+    }
     return this._auth.isAuthorized();
   }
 
-  loginUser(email: string, password: string, completion: (token: ?string, success: bool)=>void) {
+  login(email: string, password: string, completion: (token: ?string, success: bool)=>void) {
+    if (!this._isConfigured()) {
+      return;
+    }
     this._auth.login(email, password, completion);
   }
 
-  logoutUser() {
+  logout() {
+    if (!this._isConfigured()) {
+      return;
+    }
     this._auth.deauthorize();
   }
 
