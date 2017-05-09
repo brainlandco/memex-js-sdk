@@ -49,13 +49,13 @@ export class Spaces {
   _authAPIURL(environment: EnvironmentType): string {
     switch (environment) {
       case environmentTypes.production:
-        return 'https://localhost:5000';
+        return 'https://memexapp-stage.herokuapp.com';
       case environmentTypes.stage:
-        return 'http://localhost:5000';
+        return 'https://memexapp-stage.herokuapp.com';
       case environmentTypes.localhost:
-        return 'http://localhost:5000';
+        return 'http://localhost:5001';
       case environmentTypes.sandbox:
-        return 'http://localhost:5000';
+        return 'https://memexapp-sandbox.herokuapp.com';
       default:
         return '';
     }
@@ -64,13 +64,13 @@ export class Spaces {
   _spacesAPIURL(environment: EnvironmentType): string {
     switch (environment) {
       case environmentTypes.production:
-        return 'http://localhost:5000';
+        return 'https://memexapp-stage.herokuapp.com';
       case environmentTypes.stage:
-        return 'http://localhost:5000';
+        return 'https://memexapp-stage.herokuapp.com';
       case environmentTypes.localhost:
         return 'http://localhost:5001';
       case environmentTypes.sandbox:
-        return 'http://localhost:5000';
+        return 'https://memexapp-sandbox.herokuapp.com';
       default:
         return '';
     }
@@ -229,7 +229,6 @@ export class Spaces {
       }, []).join('&');
       url += '?' + queryString;
     }
-    console.log(url, options)
     fetch(url, options)
       .then((response: Object): Object => {
         if (response.status < 200 || response.status >= 300) {
@@ -242,7 +241,6 @@ export class Spaces {
         return data.json();
       })
       .then((response: Object) => {
-        console.log("loaded json", response, completion)
         completion(response, true);
       },
       () => {
