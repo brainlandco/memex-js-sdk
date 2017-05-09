@@ -8,8 +8,8 @@ import Media from './data/Media.js';
 import Space from './data/Space.js';
 import Link from './data/Link.js';
 import { mediaTypes, mediaDataStates, spaceTypes } from './data/Types.js';
-import type { Configuration } from './Configuration.js';
-import { spacesAPIURL, environmentTypes } from './Configuration.js';
+import type { EnvironmentType, Configuration } from './Configuration.js';
+import { authAPIURL, spacesAPIURL, environmentTypes } from './Configuration.js';
 
 const methods = {
   GET: 'GET',
@@ -42,7 +42,37 @@ export class Spaces {
 
   _configure(configuration: Configuration) {
     this._configuration = configuration;
-    this._auth = new Auth(configuration);
+    this._auth = new Auth(this._authAPIURL(configuration.environment));
+  }
+
+  _authAPIURL(environment: EnvironmentType): string {
+    switch (environment) {
+      case environmentTypes.production:
+        return 'https://localhost:5000';
+      case environmentTypes.stage:
+        return 'http://localhost:5000';
+      case environmentTypes.localhost:
+        return 'http://localhost:5000';
+      case environmentTypes.sandbox:
+        return 'http://localhost:5000';
+      default:
+        return '';
+    }
+  }
+
+  _spacesAPIURL(environment: EnvironmentType): string {
+    switch (environment) {
+      case environmentTypes.production:
+        return 'http://localhost:5000';
+      case environmentTypes.stage:
+        return 'http://localhost:5000';
+      case environmentTypes.localhost:
+        return 'http://localhost:5000';
+      case environmentTypes.sandbox:
+        return 'http://localhost:5000';
+      default:
+        return '';
+    }
   }
 
   isLoggedIn(): bool {
@@ -133,9 +163,9 @@ export class Spaces {
         return;
       }
       let links = [];
-      for (let json of json.links) {
+      for (let item of json.links) {
         let link = new Link();
-        link.fromJSON(json);
+        link.fromJSON(item);
         links.push(link);
       }
       completion(links, true);
@@ -171,7 +201,7 @@ export class Spaces {
         'X-Client-Token': this._configuration.clientToken
       }
     };
-    let host = spacesAPIURL(this._configuration.environment);
+    let host = this._spacesAPIURL(this._configuration.environment);
     let url = host + '/api/v1/' + path;
     let resultQuery = query;
     if (this._auth.token != null) {

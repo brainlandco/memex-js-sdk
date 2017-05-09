@@ -13,7 +13,7 @@ export type Configuration = {
   environment: EnvironmentType
 }
 
-export function authAPIURL(environment: EnvironmentType): string {
+export function authAPIURL(environment: number): string {
   switch (environment) {
     case environmentTypes.production:
       return 'https://localhost:5000';

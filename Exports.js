@@ -6,4 +6,4 @@ var Memex = {
   client: new Spaces()
 }
 
-module.exports = Memex;
+export default Memex;

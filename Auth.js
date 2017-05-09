@@ -4,7 +4,6 @@ import 'whatwg-fetch';
 import Cookies from 'cookies-js';
 
 import type { Configuration } from './Configuration.js';
-import { authAPIURL } from './Configuration.js';
 
 type AuthReponse = {
   authorization_token: ?string;
@@ -17,8 +16,8 @@ export class Auth {
   token: ?string;
   _host: string;
 
-  constructor(configuration: Configuration) {
-    this._host = authAPIURL(configuration.environment);
+  constructor(host: string) {
+    this._host = host;
     this._loadFromCookies();
   }
 
