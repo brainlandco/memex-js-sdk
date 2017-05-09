@@ -8,8 +8,8 @@ import Media from './data/Media.js';
 import Space from './data/Space.js';
 import Link from './data/Link.js';
 import { mediaTypes, mediaDataStates, spaceTypes } from './data/Types.js';
-import type { Configuration } from './Configuration.js';
-import { spacesAPIURL } from './Configuration.js';
+import type Configuration from './Configuration.js';
+import { spacesAPIURL, environmentTypes } from './Configuration.js';
 
 const methods = {
   GET: 'GET',
@@ -17,19 +17,44 @@ const methods = {
 };
 type Method = $Keys<typeof methods>;
 
-export class Memex {
+export class Spaces {
 
-  configuration: Configuration;
-  auth: Auth;
-  _host: string;
+  _configuration: Configuration;
+  _auth: Auth;
 
   constructor() {
   }
 
-  configure(configuration: Configuration) {
-    this.configuration = configuration;
-    this.auth = new Auth(configuration);
-    this._host = spacesAPIURL(configuration.environment);
+  _isConfigured(): bool {
+    if (this._configuration == null) {
+      console.error("Missing Memex configuration, call sharedMemex.configure(...)");
+      return false;
+    }
+    return true;
+  }
+
+  setClientToken(clientToken: string) {
+    this._configure({
+      clientToken: clientToken,
+      environment: environmentTypes.production
+    });
+  }
+
+  _configure(configuration: Configuration) {
+    this._configuration = configuration;
+    this._auth = new Auth(configuration);
+  }
+
+  isLoggedIn(): bool {
+    return this._auth.isAuthorized();
+  }
+
+  loginUser(email: string, password: string, completion: (token: ?string, success: bool)=>void) {
+    this._auth.login(email, password, completion);
+  }
+
+  logoutUser() {
+    this._auth.deauthorize();
   }
 
   createCollectionSpace(tag: string, autodump: bool, completion: (space: ?Space, success: bool) => void) {
@@ -135,18 +160,22 @@ export class Memex {
   }
 
   _perform(method: Method, path: string, query: ?Object, body: ?Object, completion: (json: ?Object, success: bool) => void) {
+    if (!this._isConfigured()) {
+      return;
+    }
     let options = {
       method: method,
       body: body != null ? JSON.stringify(body) : null,
-      headers: { 'Content-Type': 'application/json' }
-    };
-    let url = this._host + '/api/v1/' + path;
-    let resultQuery = query;
-    if (this.auth.token != null) {
-      if (resultQuery == null) {
-        resultQuery = {};
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Client-Token': this._configuration.clientToken
       }
-      resultQuery.token = this.auth.token;
+    };
+    let host = spacesAPIURL(this._configuration.environment);
+    let url = host + '/api/v1/' + path;
+    let resultQuery = query;
+    if (this._auth.token != null) {
+      options.headers['X-User-Token'] = this._auth.token;
     }
     if (resultQuery != null) {
       let keys = Object.keys(resultQuery);
@@ -179,5 +208,3 @@ export class Memex {
       });
   }
 }
-
-export let sharedMemex = new Memex();

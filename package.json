@@ -2,7 +2,7 @@
   "name": "memex-js-sdk",
   "version": "1.0.0",
   "description": "Memex SDK",
-  "main": "Memex.js",
+  "main": "Exports.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,11 +18,11 @@
   "bugs": {
     "url": "https://github.com/memexapp/memex-js-sdk/issues"
   },
-  "homepage": "https://github.com/memexapp/memex-js-sdk#readme"
+  "homepage": "https://github.com/memexapp/memex-js-sdk#readme",
   "dependencies": {
     "base-64": "^0.1.0",
     "utf8": "^2.1.2",
     "whatwg-fetch": "^2.0.3",
-    "cookies-js": "^1.2.3",
-  },
+    "cookies-js": "^1.2.3"
+  }
 }

@@ -9,14 +9,14 @@ export const environmentTypes = {
 };
 
 export type Configuration = {
-  token: string,
+  clientToken: string,
   environment: EnvironmentType
 }
 
 export function authAPIURL(environment: EnvironmentType): string {
   switch (environment) {
     case environmentTypes.production:
-      return 'http://localhost:5000';
+      return 'https://localhost:5000';
     case environmentTypes.stage:
       return 'http://localhost:5000';
     case environmentTypes.localhost:
