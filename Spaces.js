@@ -24,21 +24,21 @@ export class Spaces {
 
   constructor() {
     this._configuration = {
-      clientToken: "",
+      appToken: "",
       environment: environmentTypes.production
     }
   }
 
   _isConfigured(): bool {
-    if (this._configuration.clientToken === "") {
-      console.error("Missing Memex configuration, call Memex.client.setClientToken('<Your app token>')");
+    if (this._configuration.appToken === "") {
+      console.error("Missing Memex configuration, call Memex.client.setAppToken('<Your app token>')");
       return false;
     }
     return true;
   }
 
-  setClientToken(clientToken: string) {
-    this._configuration.clientToken = clientToken;
+  setAppToken(token: string) {
+    this._configuration.appToken = token;
   }
 
   _setEnvironment(environment: EnvironmentType) {
@@ -208,15 +208,15 @@ export class Spaces {
       body: body != null ? JSON.stringify(body) : null,
       headers: {
         'Content-Type': 'application/json',
-        'X-Client-Token': this._configuration.clientToken
+        'X-App-Token': this._configuration.appToken
       }
     };
-    let host = this._spacesAPIURL(this._configuration.environment);
-    let url = host + '/api/v1/' + path;
-    let resultQuery = query;
     if (this._auth.token != null) {
       options.headers['X-User-Token'] = this._auth.token;
     }
+    let host = this._spacesAPIURL(this._configuration.environment);
+    let url = host + '/api/v1/' + path;
+    let resultQuery = query;
     if (resultQuery != null) {
       let keys = Object.keys(resultQuery);
       let queryString = keys.reduce(function(array: Array<string>, key: string): Array<string> {

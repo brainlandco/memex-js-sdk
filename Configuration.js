@@ -9,7 +9,7 @@ export const environmentTypes = {
 };
 
 export type Configuration = {
-  clientToken: string,
+  appToken: string,
   environment: EnvironmentType
 }
 

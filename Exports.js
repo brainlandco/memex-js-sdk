@@ -8,7 +8,7 @@ import Link from './data/Link.js';
 import { mediaTypes, mediaDataStates, spaceTypes } from './data/Types.js';
 
 var Memex = {
-  client: new Spaces(),
+  sharedClient: new Spaces(),
   environmentTypes: environmentTypes,
   mediaTypes: mediaTypes,
   spaceTypes: spaceTypes,
