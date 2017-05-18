@@ -4,8 +4,7 @@ export type EnvironmentType = number;
 export const environmentTypes = {
   production: 0,
   stage: 1,
-  localhost: 2,
-  sandbox: 3
+  localhost: 2
 };
 
 export type Configuration = {
@@ -16,12 +15,10 @@ export type Configuration = {
 export function authAPIURL(environment: number): string {
   switch (environment) {
     case environmentTypes.production:
-      return 'https://localhost:5000';
+      return 'https://mmx-spaces-api-prod.herokuapp.com';
     case environmentTypes.stage:
-      return 'http://localhost:5000';
+      return 'https://mmx-spaces-api-stage.herokuapp.com';
     case environmentTypes.localhost:
-      return 'http://localhost:5000';
-    case environmentTypes.sandbox:
       return 'http://localhost:5000';
     default:
       return '';
