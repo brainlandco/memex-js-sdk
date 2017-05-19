@@ -10,7 +10,7 @@ import Link from './data/Link.js';
 import App from './data/App.js';
 import { mediaTypes, mediaDataStates, spaceTypes } from './data/Types.js';
 import type { EnvironmentType, Configuration } from './Configuration.js';
-import { APIURL, environmentTypes } from './Configuration.js';
+import { environmentTypes } from './Configuration.js';
 
 const methods = {
   GET: 'GET',
@@ -28,6 +28,7 @@ export class Spaces {
       appToken: "",
       environment: environmentTypes.production
     }
+    this._setEnvironment(environmentTypes.production)
   }
 
   _isConfigured(): bool {
@@ -40,24 +41,25 @@ export class Spaces {
 
   setAppToken(token: string) {
     this._configuration.appToken = token;
+    this._auth.appToken = token;
   }
 
   _setEnvironment(environment: EnvironmentType) {
     this._configuration.environment = environment;
     this._auth = new Auth(this._APIURL(environment));
+    this._auth.appToken = this._configuration.appToken;
   }
 
   _APIURL(environment: EnvironmentType): string {
     switch (environment) {
       case environmentTypes.production:
-        return 'https://memexapp-stage.herokuapp.com';
+        return 'https://mmx-spaces-api-prod.herokuapp.com';
       case environmentTypes.stage:
-        return 'https://memexapp-stage.herokuapp.com';
+        return 'https://mmx-spaces-api-stage.herokuapp.com';
       case environmentTypes.localhost:
-        return 'http://localhost:5001';
-      case environmentTypes.sandbox:
-        return 'https://memexapp-sandbox.herokuapp.com';
+        return 'http://localhost:5000';
       default:
+        console.error('Unknown environment');
         return '';
     }
   }

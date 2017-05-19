@@ -13,7 +13,8 @@ const tokenKey = 'token';
 
 export class Auth {
 
-  token: ?string;
+  userToken: ?string;
+  appToken: string;
   _host: string;
 
   constructor(host: string) {
@@ -22,26 +23,26 @@ export class Auth {
   }
 
   _loadFromCookies() {
-    this.token = Cookies.get(tokenKey);
-    if (this.token === 'null') {
-      this.token = null;
+    this.userToken = Cookies.get(tokenKey);
+    if (this.userToken === 'null') {
+      this.userToken = null;
     }
   }
 
   _storeIntoCookies() {
-    if (this.token != null) {
-      Cookies.set(tokenKey, this.token, null);
+    if (this.userToken != null) {
+      Cookies.set(tokenKey, this.userToken, null);
     } else {
       Cookies.expire(tokenKey);
     }
   }
 
   isAuthorized(): bool {
-    return this.token != null;
+    return this.userToken != null;
   }
 
   deauthorize() {
-    this.token = null;
+    this.userToken = null;
     this._storeIntoCookies();
   }
 
@@ -55,7 +56,10 @@ export class Auth {
     let options = {
       method: 'POST',
       body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' }
+      headers: {
+        'Content-Type': 'application/json',
+        'X-App-Token': this.appToken
+      }
     };
     let url = this._host + '/api/v1/auth/login';
 
@@ -71,12 +75,12 @@ export class Auth {
         return data.json();
       })
       .then((response: AuthReponse) => {
-        this.token = response.authorization_token;
+        this.userToken = response.authorization_token;
         this._storeIntoCookies();
-        completion(this.token, true);
+        completion(this.userToken, true);
       },
       () => {
-        this.token = null;
+        this.userToken = null;
         completion(null, false);
       });
   }

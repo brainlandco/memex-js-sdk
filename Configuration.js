@@ -12,7 +12,7 @@ export type Configuration = {
   environment: EnvironmentType
 }
 
-export function APIURL(environment: number): string {
+export function APIURL(environment: EnvironmentType): string {
   switch (environment) {
     case environmentTypes.production:
       return 'https://mmx-spaces-api-prod.herokuapp.com';
