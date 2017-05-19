@@ -12,7 +12,7 @@ export type Configuration = {
   environment: EnvironmentType
 }
 
-export function authAPIURL(environment: number): string {
+export function APIURL(environment: number): string {
   switch (environment) {
     case environmentTypes.production:
       return 'https://mmx-spaces-api-prod.herokuapp.com';
@@ -21,21 +21,7 @@ export function authAPIURL(environment: number): string {
     case environmentTypes.localhost:
       return 'http://localhost:5000';
     default:
-      return '';
-  }
-}
-
-export function spacesAPIURL(environment: EnvironmentType): string {
-  switch (environment) {
-    case environmentTypes.production:
-      return 'http://localhost:5000';
-    case environmentTypes.stage:
-      return 'http://localhost:5000';
-    case environmentTypes.localhost:
-      return 'http://localhost:5000';
-    case environmentTypes.sandbox:
-      return 'http://localhost:5000';
-    default:
+      console.error('Unknown environment');
       return '';
   }
 }
