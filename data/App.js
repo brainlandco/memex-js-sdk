@@ -5,7 +5,7 @@ export default class App {
   id: number;
   name: ?string;
   description: ?string;
-  token: string;
+  token: ?string;
 
   constructor() {
   }
