@@ -5,6 +5,7 @@ import { environmentTypes } from './Configuration.js';
 import Media from './data/Media.js';
 import Space from './data/Space.js';
 import Link from './data/Link.js';
+import App from './data/App.js';
 import { mediaTypes, mediaDataStates, spaceTypes } from './data/Types.js';
 
 var Memex = {
@@ -15,7 +16,8 @@ var Memex = {
   mediaDataStates: mediaDataStates,
   Media: Media,
   Space: Space,
-  Link: Link
+  Link: Link,
+  App: App
 }
 
 export default Memex;

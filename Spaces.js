@@ -7,9 +7,10 @@ import { Auth } from './Auth.js';
 import Media from './data/Media.js';
 import Space from './data/Space.js';
 import Link from './data/Link.js';
+import App from './data/App.js';
 import { mediaTypes, mediaDataStates, spaceTypes } from './data/Types.js';
 import type { EnvironmentType, Configuration } from './Configuration.js';
-import { authAPIURL, spacesAPIURL, environmentTypes } from './Configuration.js';
+import { environmentTypes } from './Configuration.js';
 
 const methods = {
   GET: 'GET',
@@ -27,6 +28,7 @@ export class Spaces {
       appToken: "",
       environment: environmentTypes.production
     }
+    this._setEnvironment(environmentTypes.production)
   }
 
   _isConfigured(): bool {
@@ -39,39 +41,25 @@ export class Spaces {
 
   setAppToken(token: string) {
     this._configuration.appToken = token;
+    this._auth.appToken = token;
   }
 
   _setEnvironment(environment: EnvironmentType) {
     this._configuration.environment = environment;
-    this._auth = new Auth(this._authAPIURL(environment));
+    this._auth = new Auth(this._APIURL(environment));
+    this._auth.appToken = this._configuration.appToken;
   }
 
-  _authAPIURL(environment: EnvironmentType): string {
+  _APIURL(environment: EnvironmentType): string {
     switch (environment) {
       case environmentTypes.production:
-        return 'https://memexapp-stage.herokuapp.com';
+        return 'https://mmx-spaces-api-prod.herokuapp.com';
       case environmentTypes.stage:
-        return 'https://memexapp-stage.herokuapp.com';
+        return 'https://mmx-spaces-api-stage.herokuapp.com';
       case environmentTypes.localhost:
-        return 'http://localhost:5001';
-      case environmentTypes.sandbox:
-        return 'https://memexapp-sandbox.herokuapp.com';
+        return 'http://localhost:5000';
       default:
-        return '';
-    }
-  }
-
-  _spacesAPIURL(environment: EnvironmentType): string {
-    switch (environment) {
-      case environmentTypes.production:
-        return 'https://memexapp-stage.herokuapp.com';
-      case environmentTypes.stage:
-        return 'https://memexapp-stage.herokuapp.com';
-      case environmentTypes.localhost:
-        return 'http://localhost:5001';
-      case environmentTypes.sandbox:
-        return 'https://memexapp-sandbox.herokuapp.com';
-      default:
+        console.error('Unknown environment');
         return '';
     }
   }
@@ -199,6 +187,75 @@ export class Spaces {
       });
   }
 
+  getApps(completion: (apps: ?Array<App>, success: bool)=>void) {
+    let path = 'apps';
+    this._perform(methods.GET, path, {}, null, (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let apps = [];
+      for (let item of json.apps) {
+        let app = new App();
+        app.fromJSON(item);
+        apps.push(app);
+      }
+      completion(apps, true);
+    });
+  }
+
+  createApp(app: App, completion: (app: ?App, success: bool) => void) {
+    let body = {
+      app: app.toJSON(),
+    };
+    this._perform(methods.POST, 'apps', null, body, (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let newApp = new App();
+      newApp.fromJSON(json.app);
+      completion(newApp, true);
+    });
+  }
+
+  updateApp(app: App, completion: (app: ?App, success: bool) => void) {
+    if (app.id === null) {
+      console.error("Missing app id");
+      completion(null, false);
+      return;
+    }
+    let body = {
+      app: app.toJSON(),
+    };
+    this._perform(methods.POST, 'apps/'+app.id, null, body, (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let newApp = new App();
+      newApp.fromJSON(json.app);
+      completion(newApp, true);
+    });
+  }
+
+  updateApp(app: App, completion: (app: ?App, success: bool) => void) {
+    if (app.id === null) {
+      console.error("Missing app id");
+      completion(null, false);
+      return;
+    }
+    this._perform(methods.POST, 'apps/'+app.id+"/renew-token", null, {}, (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let newApp = new App();
+      newApp.fromJSON(json.app);
+      completion(newApp, true);
+    });
+  }
+
   _perform(method: Method, path: string, query: ?Object, body: ?Object, completion: (json: ?Object, success: bool) => void) {
     if (!this._isConfigured()) {
       return;
@@ -211,10 +268,10 @@ export class Spaces {
         'X-App-Token': this._configuration.appToken
       }
     };
-    if (this._auth.token != null) {
-      options.headers['X-User-Token'] = this._auth.token;
+    if (this._auth.userToken != null) {
+      options.headers['X-User-Token'] = this._auth.userToken;
     }
-    let host = this._spacesAPIURL(this._configuration.environment);
+    let host = this._APIURL(this._configuration.environment);
     let url = host + '/api/v1/' + path;
     let resultQuery = query;
     if (resultQuery != null) {
