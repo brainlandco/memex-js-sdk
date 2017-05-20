@@ -19,21 +19,21 @@ export class Auth {
 
   constructor(host: string) {
     this._host = host;
-    this._loadFromCookies();
+    this._loadFromStorage();
   }
 
-  _loadFromCookies() {
-    this.userToken = Cookies.get(tokenKey);
+  _loadFromStorage() {
+    this.userToken = localStorage.getItem(tokenKey);
     if (this.userToken === 'null') {
       this.userToken = null;
     }
   }
 
-  _storeIntoCookies() {
+  _storeIntoStorage() {
     if (this.userToken != null) {
-      Cookies.set(tokenKey, this.userToken, null);
+      localStorage.setItem(tokenKey, this.userToken);
     } else {
-      Cookies.expire(tokenKey);
+      localStorage.removeItem(tokenKey);
     }
   }
 
@@ -43,7 +43,7 @@ export class Auth {
 
   deauthorize() {
     this.userToken = null;
-    this._storeIntoCookies();
+    this._storeIntoStorage();
   }
 
   login(email: string,
@@ -76,7 +76,7 @@ export class Auth {
       })
       .then((response: AuthReponse) => {
         this.userToken = response.authorization_token;
-        this._storeIntoCookies();
+        this._storeIntoStorage();
         completion(this.userToken, true);
       },
       () => {

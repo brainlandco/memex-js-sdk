@@ -268,8 +268,8 @@ export class Spaces {
         'X-App-Token': this._configuration.appToken
       }
     };
-    if (this._auth.token != null) {
-      options.headers['X-User-Token'] = this._auth.token;
+    if (this._auth.userToken != null) {
+      options.headers['X-User-Token'] = this._auth.userToken;
     }
     let host = this._APIURL(this._configuration.environment);
     let url = host + '/api/v1/' + path;
