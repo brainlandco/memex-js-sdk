@@ -239,13 +239,8 @@ export class Spaces {
     });
   }
 
-  updateApp(app: App, completion: (app: ?App, success: bool) => void) {
-    if (app.id === null) {
-      console.error("Missing app id");
-      completion(null, false);
-      return;
-    }
-    this._perform(methods.POST, 'apps/'+app.id+"/renew-token", null, {}, (json: ?Object, success: bool) => {
+  renewAppToken(appID: number, completion: (app: ?App, success: bool) => void) {
+    this._perform(methods.POST, 'apps/'+appID+"/renew-token", null, {}, (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -298,11 +293,8 @@ export class Spaces {
       }, []).join('&');
       url += '?' + queryString;
     }
-    console.log(url)
-    console.log(options)
     fetch(url, options)
       .then((response: Object): Object => {
-        console.log(response)
         if (response.status < 200 || response.status >= 300) {
           throw response;
         } else {
@@ -310,14 +302,12 @@ export class Spaces {
         }
       })
       .then((data: any): Object => {
-        console.log(data)
         return data.json();
       })
       .then((response: Object) => {
         completion(response, true);
       },
       (error: Object) => {
-        console.log("failed", error)
         completion(null, false);
       });
   }
