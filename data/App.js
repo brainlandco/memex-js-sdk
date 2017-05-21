@@ -1,11 +1,15 @@
 // @flow
 
+import type { AppState } from './Types.js';
+import { appStates } from './Types.js';
+
 export default class App {
 
   id: number;
   name: ?string;
   description: ?string;
   token: ?string;
+  state: ?AppState;
 
   constructor() {
   }
@@ -15,6 +19,7 @@ export default class App {
     this.name = json.name;
     this.description = json.description;
     this.token = json.token;
+    this.state = json.state;
   }
 
   toJSON(): Object {

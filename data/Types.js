@@ -37,3 +37,10 @@ export const entityStates = {
   visible: 0,
   deleted: 1
 };
+
+export type AppState = number;
+export const appStates = {
+  new: 0,
+  requested: 1,
+  approved: 2
+};

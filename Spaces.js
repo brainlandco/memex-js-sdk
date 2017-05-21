@@ -256,6 +256,18 @@ export class Spaces {
     });
   }
 
+  getApp(id: number, completion: (app: ?App, success: bool) => void) {
+    this._perform(methods.GET, 'apps/'+id, null, null, (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let newApp = new App();
+      newApp.fromJSON(json.app);
+      completion(newApp, true);
+    });
+  }
+
   _perform(method: Method, path: string, query: ?Object, body: ?Object, completion: (json: ?Object, success: bool) => void) {
     if (!this._isConfigured()) {
       return;
@@ -286,8 +298,11 @@ export class Spaces {
       }, []).join('&');
       url += '?' + queryString;
     }
+    console.log(url)
+    console.log(options)
     fetch(url, options)
       .then((response: Object): Object => {
+        console.log(response)
         if (response.status < 200 || response.status >= 300) {
           throw response;
         } else {
@@ -295,12 +310,14 @@ export class Spaces {
         }
       })
       .then((data: any): Object => {
+        console.log(data)
         return data.json();
       })
       .then((response: Object) => {
         completion(response, true);
       },
-      () => {
+      (error: Object) => {
+        console.log("failed", error)
         completion(null, false);
       });
   }
