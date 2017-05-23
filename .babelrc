@@ -1,3 +1,4 @@
 {
-  "plugins": ["typecheck", "syntax-flow", "transform-flow-strip-types"]
+  "presets": ["react", "es2015", "stage-0"],
+  "plugins": ["babel-plugin-add-module-exports"]
 }
