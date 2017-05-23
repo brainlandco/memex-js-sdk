@@ -1,6 +1,6 @@
 {
   "name": "memex-js-sdk",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Memex SDK",
   "main": "src/Exports.js",
   "scripts": {
