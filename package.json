@@ -2,7 +2,7 @@
   "name": "memex-js-sdk",
   "version": "1.1.2",
   "description": "Memex SDK",
-  "main": "src/Exports.js",
+  "main": "lib/memex-js-sdk.js",
   "scripts": {
     "build": "WEBPACK_ENV=build webpack",
     "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch"
