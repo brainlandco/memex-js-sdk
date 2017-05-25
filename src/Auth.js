@@ -1,5 +1,7 @@
 // @flow
 
+import 'whatwg-fetch';
+
 import type { Configuration } from './Configuration.js';
 
 type AuthReponse = {

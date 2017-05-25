@@ -136,7 +136,7 @@ export class Spaces {
   createSpace(space: Space, autodump: bool, completion: (space: ?Space, success: bool) => void) {
     let body = {
       space: space.toJSON(),
-      process: true,
+      process: "sync",
       autodump: autodump
     };
     this._perform(methods.POST, 'spaces', null, body, (json: ?Object, success: bool) => {
