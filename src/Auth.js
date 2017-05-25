@@ -1,8 +1,5 @@
 // @flow
 
-import 'whatwg-fetch';
-import Cookies from 'cookies-js';
-
 import type { Configuration } from './Configuration.js';
 
 type AuthReponse = {
