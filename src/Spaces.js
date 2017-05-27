@@ -279,7 +279,7 @@ export class Spaces {
       options.headers['X-User-Token'] = this._auth.userToken;
     }
     let host = this._APIURL(this._configuration.environment);
-    let url = host + '/api/v1/' + path;
+    let url = host + '/' + path;
     let resultQuery = query;
     if (resultQuery != null) {
       let keys = Object.keys(resultQuery);

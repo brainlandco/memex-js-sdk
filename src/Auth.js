@@ -5,7 +5,7 @@ import 'whatwg-fetch';
 import type { Configuration } from './Configuration.js';
 
 type AuthReponse = {
-  authorization_token: ?string;
+  token: ?string;
 }
 
 const tokenKey = 'token';
@@ -60,7 +60,7 @@ export class Auth {
         'X-App-Token': this.appToken
       }
     };
-    let url = this._host + '/api/v1/auth/login';
+    let url = this._host + '/users/request-token';
 
     fetch(url, options)
       .then((response: Object): Object => {
@@ -74,7 +74,7 @@ export class Auth {
         return data.json();
       })
       .then((response: AuthReponse) => {
-        this.userToken = response.authorization_token;
+        this.userToken = response.token;
         this._storeIntoStorage();
         completion(this.userToken, true);
       },
