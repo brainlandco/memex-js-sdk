@@ -49,8 +49,12 @@ export class Auth {
     password: string,
     completion: (token: ?string, success: bool)=>void) {
     let data = {
-      email: email,
-      password: password
+      identity: {
+        email: email
+      },
+      secret: {
+        password: password
+      }
     };
     let options = {
       method: 'POST',
