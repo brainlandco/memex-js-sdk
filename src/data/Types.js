@@ -44,3 +44,12 @@ export const appStates = {
   requested: 1,
   approved: 2
 };
+
+
+export type AppPlatform = number;
+export const appPlatforms = {
+  rest: 0,
+  swift: 1,
+  javaScript: 2,
+  golang: 3
+};

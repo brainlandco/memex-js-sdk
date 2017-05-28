@@ -1,6 +1,6 @@
 // @flow
 
-import type { AppState } from './Types.js';
+import type { AppState, AppPlatform } from './Types.js';
 import { appStates } from './Types.js';
 
 export default class App {
@@ -12,6 +12,7 @@ export default class App {
   webpage: ?string;
   token: ?string;
   state: ?AppState;
+  platform: ?AppPlatform;
 
   constructor() {
   }
@@ -24,6 +25,7 @@ export default class App {
     this.webpage = json.webpage;
     this.token = json.token;
     this.state = json.state;
+    this.platform = json.platform;
   }
 
   toJSON(): Object {
@@ -32,6 +34,7 @@ export default class App {
       description: this.description,
       email: this.email,
       webpage: this.webpage,
+      platform: this.platform,
     };
   }
 
