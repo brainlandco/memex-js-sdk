@@ -1,0 +1,128 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'publish' ]
+2 info using npm@3.10.8
+3 info using node@v6.9.1
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   escapedName: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/Users/adamzdara/Memex/memex-js-sdk',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /Users/adamzdara/.npm/memex-js-sdk/1.1.6/package.tgz not in flight; packing
+9 verbose correctMkdir /Users/adamzdara/.npm correctMkdir not in flight; initializing
+10 info lifecycle memex-js-sdk@1.1.6~prepublish: memex-js-sdk@1.1.6
+11 silly lifecycle memex-js-sdk@1.1.6~prepublish: no script for prepublish, continuing
+12 verbose tar pack [ '/Users/adamzdara/.npm/memex-js-sdk/1.1.6/package.tgz',
+12 verbose tar pack   '/Users/adamzdara/Memex/memex-js-sdk' ]
+13 verbose tarball /Users/adamzdara/.npm/memex-js-sdk/1.1.6/package.tgz
+14 verbose folder /Users/adamzdara/Memex/memex-js-sdk
+15 verbose addLocalTarball adding from inside cache /Users/adamzdara/.npm/memex-js-sdk/1.1.6/package.tgz
+16 verbose correctMkdir /Users/adamzdara/.npm correctMkdir not in flight; initializing
+17 silly cache afterAdd memex-js-sdk@1.1.6
+18 verbose afterAdd /Users/adamzdara/.npm/memex-js-sdk/1.1.6/package/package.json not in flight; writing
+19 verbose correctMkdir /Users/adamzdara/.npm correctMkdir not in flight; initializing
+20 verbose afterAdd /Users/adamzdara/.npm/memex-js-sdk/1.1.6/package/package.json written
+21 silly publish { name: 'memex-js-sdk',
+21 silly publish   version: '1.1.6',
+21 silly publish   description: 'Memex SDK',
+21 silly publish   main: 'lib/memex-js-sdk.js',
+21 silly publish   scripts:
+21 silly publish    { build: 'WEBPACK_ENV=build webpack',
+21 silly publish      dev: 'WEBPACK_ENV=dev webpack --progress --colors --watch' },
+21 silly publish   repository:
+21 silly publish    { type: 'git',
+21 silly publish      url: 'git+https://github.com/memexapp/memex-js-sdk.git',
+21 silly publish      lint: 'eslint -c .eslintrc src',
+21 silly publish      fixlint: 'eslint -c .eslintrc src --fix' },
+21 silly publish   keywords: [ 'memex' ],
+21 silly publish   author: { name: 'Adam Zdara' },
+21 silly publish   license: 'UNLICENSED',
+21 silly publish   bugs: { url: 'https://github.com/memexapp/memex-js-sdk/issues' },
+21 silly publish   homepage: 'https://github.com/memexapp/memex-js-sdk#readme',
+21 silly publish   dependencies:
+21 silly publish    { 'base-64': '^0.1.0',
+21 silly publish      utf8: '^2.1.2',
+21 silly publish      'whatwg-fetch': '^2.0.3',
+21 silly publish      'cookies-js': '^1.2.3' },
+21 silly publish   devDependencies:
+21 silly publish    { babel: '6.3.13',
+21 silly publish      'babel-core': '6.1.18',
+21 silly publish      'babel-eslint': '4.1.3',
+21 silly publish      'babel-loader': '6.1.0',
+21 silly publish      'babel-plugin-add-module-exports': '0.1.2',
+21 silly publish      'babel-preset-es2015': '6.3.13',
+21 silly publish      chai: '3.4.1',
+21 silly publish      escope: '^3.3.0',
+21 silly publish      eslint: '1.7.2',
+21 silly publish      'eslint-loader': '1.1.0',
+21 silly publish      mocha: '2.3.4',
+21 silly publish      webpack: '1.12.9' },
+21 silly publish   gitHead: '006f02da4d7bd0f1ab3c056d63d3831f379c9ccf',
+21 silly publish   readme: 'ERROR: No README data found!',
+21 silly publish   _id: 'memex-js-sdk@1.1.6',
+21 silly publish   _shasum: '61f5716fffb2f532cd57cfebc0399716de89d8f2',
+21 silly publish   _from: '.' }
+22 verbose getPublishConfig undefined
+23 silly mapToRegistry name memex-js-sdk
+24 silly mapToRegistry using default registry
+25 silly mapToRegistry registry https://registry.npmjs.org/
+26 silly mapToRegistry data Result {
+26 silly mapToRegistry   raw: 'memex-js-sdk',
+26 silly mapToRegistry   scope: null,
+26 silly mapToRegistry   escapedName: 'memex-js-sdk',
+26 silly mapToRegistry   name: 'memex-js-sdk',
+26 silly mapToRegistry   rawSpec: '',
+26 silly mapToRegistry   spec: 'latest',
+26 silly mapToRegistry   type: 'tag' }
+27 silly mapToRegistry uri https://registry.npmjs.org/memex-js-sdk
+28 verbose publish registryBase https://registry.npmjs.org/
+29 silly publish uploading /Users/adamzdara/.npm/memex-js-sdk/1.1.6/package.tgz
+30 verbose request uri https://registry.npmjs.org/memex-js-sdk
+31 verbose request sending authorization for write operation
+32 info attempt registry request try #1 at 10:34:25 AM
+33 verbose request using bearer token for auth
+34 verbose request id 3c5ea851bf8a5d09
+35 http request PUT https://registry.npmjs.org/memex-js-sdk
+36 http 403 https://registry.npmjs.org/memex-js-sdk
+37 verbose headers { 'content-type': 'application/json',
+37 verbose headers   'cache-control': 'max-age=300',
+37 verbose headers   'content-length': '95',
+37 verbose headers   'accept-ranges': 'bytes',
+37 verbose headers   date: 'Sat, 27 May 2017 08:34:25 GMT',
+37 verbose headers   via: '1.1 varnish',
+37 verbose headers   connection: 'keep-alive',
+37 verbose headers   'x-served-by': 'cache-hhn1521-HHN',
+37 verbose headers   'x-cache': 'MISS',
+37 verbose headers   'x-cache-hits': '0',
+37 verbose headers   'x-timer': 'S1495874064.365558,VS0,VE1143',
+37 verbose headers   vary: 'Accept-Encoding' }
+38 verbose request invalidating /Users/adamzdara/.npm/registry.npmjs.org/memex-js-sdk on PUT
+39 error publish Failed PUT 403
+40 verbose stack Error: "You cannot publish over the previously published version 1.1.6." : memex-js-sdk
+40 verbose stack     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
+40 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
+40 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
+40 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:187:22)
+40 verbose stack     at emitTwo (events.js:106:13)
+40 verbose stack     at Request.emit (events.js:191:7)
+40 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1044:10)
+40 verbose stack     at emitOne (events.js:96:13)
+40 verbose stack     at Request.emit (events.js:188:7)
+40 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:965:12)
+41 verbose statusCode 403
+42 verbose pkgid memex-js-sdk
+43 verbose cwd /Users/adamzdara/Memex/memex-js-sdk
+44 error Darwin 16.5.0
+45 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "publish"
+46 error node v6.9.1
+47 error npm  v3.10.8
+48 error code E403
+49 error "You cannot publish over the previously published version 1.1.6." : memex-js-sdk
+50 error If you need help, you may report this error at:
+50 error     <https://github.com/npm/npm/issues>
+51 verbose exit [ 1, true ]

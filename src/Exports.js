@@ -17,7 +17,7 @@ var Memex = {
   Media: Media,
   Space: Space,
   Link: Link,
-  App: App
+  App: App,
 }
 
 export default Memex;

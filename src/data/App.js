@@ -8,6 +8,8 @@ export default class App {
   id: number;
   name: ?string;
   description: ?string;
+  email: ?string;
+  webpage: ?string;
   token: ?string;
   state: ?AppState;
 
@@ -18,6 +20,8 @@ export default class App {
     this.id = json.id;
     this.name = json.name;
     this.description = json.description;
+    this.email = json.email;
+    this.webpage = json.webpage;
     this.token = json.token;
     this.state = json.state;
   }
@@ -26,6 +30,8 @@ export default class App {
     return {
       name: this.name,
       description: this.description,
+      email: this.email,
+      webpage: this.webpage,
     };
   }
 
