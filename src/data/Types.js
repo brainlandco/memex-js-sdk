@@ -9,12 +9,6 @@ export const spaceTypes = {
   collection: 'com.memex.media.collection'
 };
 
-export type SpaceProcessingState = number;
-export const spaceProcessingStates = {
-  done: 0,
-  scheduled: 1
-};
-
 export type MediaType = string;
 export const mediaTypes = {
   reference: 'reference',
@@ -42,7 +36,9 @@ export type AppState = number;
 export const appStates = {
   new: 0,
   requested: 1,
-  approved: 2
+  approved: 2,
+  rejected: 3,
+  blocked: 4
 };
 
 

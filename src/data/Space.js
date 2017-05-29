@@ -1,8 +1,8 @@
 // @flow
 
 import Media from './Media.js';
-import type { SpaceType, SpaceProcessingState, MediaType, EntityState } from './Types.js';
-import { spaceTypes, spaceProcessingStates, entityStates } from './Types.js';
+import type { SpaceType, MediaType, EntityState } from './Types.js';
+import { spaceTypes, entityStates } from './Types.js';
 
 export default class Space {
 
