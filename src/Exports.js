@@ -2,6 +2,7 @@
 
 import { Spaces } from './Spaces.js';
 import { environmentTypes } from './Configuration.js';
+import User from './data/User.js';
 import Media from './data/Media.js';
 import Space from './data/Space.js';
 import Link from './data/Link.js';
@@ -20,6 +21,7 @@ var Memex = {
   Space: Space,
   Link: Link,
   App: App,
+  User: User,
 }
 
 export default Memex;

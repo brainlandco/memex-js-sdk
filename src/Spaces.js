@@ -5,6 +5,7 @@ import 'whatwg-fetch';
 import { Auth } from './Auth.js';
 
 import Media from './data/Media.js';
+import User from './data/User.js';
 import Space from './data/Space.js';
 import Link from './data/Link.js';
 import App from './data/App.js';
@@ -260,6 +261,62 @@ export class Spaces {
       let newApp = new App();
       newApp.fromJSON(json.app);
       completion(newApp, true);
+    });
+  }
+
+  updateUser(user: User, completion: (app: ?User, success: bool) => void) {
+    var body = {
+      user: user.toJSON()
+    };
+    this._perform(methods.POST, 'users/self', null, body, (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let newUser = new User();
+      newUser.fromJSON(json.user);
+      completion(newUser, true);
+    });
+  }
+
+  createUser(user: User, completion: (app: ?User, success: bool) => void) {
+    var body = {
+      user: user.toJSON()
+    };
+    this._perform(methods.POST, 'users', null, body, (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let newUser = new User();
+      newUser.fromJSON(json.user);
+      completion(newUser, true);
+    });
+  }
+
+  getUser(userID: ?number, completion: (app: ?User, success: bool) => void) {
+    this._perform(methods.GET, 'users/' + (userID == null ? 'self' : userID), null, null, (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let newUser = new User();
+      newUser.fromJSON(json.user);
+      completion(newUser, true);
+    });
+  }
+
+  setUserPassword(oldPassword: ?string, newPassword: string, completion: (success: bool) => void) {
+    var body = {
+      old_password: oldPassword,
+      new_password: newPassword
+    };
+    this._perform(methods.POST, 'users/self/change-password', null, body, (json: ?Object, success: bool) => {
+      if (success === false) {
+        completion(false);
+        return;
+      }
+      completion(true);
     });
   }
 
