@@ -6,13 +6,20 @@ import { mediaDataStates, mediaTypes, entityStates } from './Types.js';
 import base64 from 'base-64';
 import utf8 from 'utf8';
 
+/** Class represents media component of space */
 export default class Media {
 
+  /** Unique media identifier */
   muid: ?string;
+  /** Media visibility state */
   state: EntityState;
+  /** Media type */
   mediaType: MediaType;
+  /** Embed media binary data */
   embedData: ?ArrayBuffer;
+  /** Data download URL */
   dataDownloadURL: ?string;
+  /** State of data in embedData or dataDownloadURL */
   dataState: MediaDataState;
 
   constructor() {
@@ -21,6 +28,11 @@ export default class Media {
     this.mediaType = mediaTypes.source;
   }
 
+  /**
+   * Sets embedData (binary format) from base64 format
+   *
+   * @param string base64: Base64 encoded data
+   */
   setEmbedDataFromBase64(base64: string) {
     let binaryString = window.atob(base64);
     let length = binaryString.length;
@@ -31,6 +43,11 @@ export default class Media {
     this.embedData = bytes.buffer;
   }
 
+  /**
+   * Sets embedData (binary format) from ANSCI ancoded text
+   *
+   * @param string value: ANSCII encoded data
+   */
   setEmbedDataFromString(value: string) {
     let length = value.length;
     let array = new Uint8Array(length);
@@ -40,6 +57,12 @@ export default class Media {
     this.embedData = array.buffer;
   }
 
+
+  /**
+   * Converts emebedData into base64 encoded string
+   *
+   * @returns string Base64 encoded embedData
+   */
   base64EmbedData(): ?string {
     if (this.embedData == null) {
       return null;
@@ -53,6 +76,11 @@ export default class Media {
     return window.btoa(binary);
   }
 
+  /**
+   * Converts utf8 encoded emebedData into string
+   *
+   * @returns string Decoded text
+   */
   textualEmbedData(): ?string {
     if (this.embedData == null) {
       return null;

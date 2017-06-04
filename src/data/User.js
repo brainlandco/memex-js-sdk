@@ -2,12 +2,18 @@
 
 import Media from './Media.js';
 
+/** Class represents user of Memex */
 export default class User {
 
+  /** Unique user identifier */
   id: ?number;
+  /** Email of user (unique) */
   email: ?string;
+  /** Fullname of user in format FirstName LastName */
   fullname: ?string;
+  /** Avatar */
   avatar: ?Media;
+  /** Users password */
   password: ?string;
 
   constructor() {
