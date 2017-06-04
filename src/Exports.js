@@ -1,7 +1,7 @@
 // @flow
 
 import { Spaces } from './Spaces.js';
-import { environmentTypes } from './Configuration.js';
+import { environmentTypes } from './data/Configuration.js';
 import User from './data/User.js';
 import Media from './data/Media.js';
 import Space from './data/Space.js';
@@ -11,6 +11,7 @@ import { mediaTypes, mediaDataStates, spaceTypes, appPlatforms } from './data/Ty
 import type { MediaType, MediaDataState, SpaceType, AppPlatform } from './data/Types.js';
 
 var Memex = {
+  /** Shared instance of Spaces */   
   sharedClient: new Spaces(),
   environmentTypes: environmentTypes,
   mediaTypes: mediaTypes,

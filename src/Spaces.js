@@ -10,14 +10,14 @@ import Space from './data/Space.js';
 import Link from './data/Link.js';
 import App from './data/App.js';
 import { mediaTypes, mediaDataStates, spaceTypes } from './data/Types.js';
-import type { EnvironmentType, Configuration } from './Configuration.js';
-import { environmentTypes } from './Configuration.js';
+import type { EnvironmentType, Configuration } from './data/Configuration.js';
+import { environmentTypes } from './data/Configuration.js';
 
+type Method = string;
 const methods = {
   GET: 'GET',
   POST: 'POST'
 };
-type Method = string;
 
 export class Spaces {
 
@@ -40,6 +40,11 @@ export class Spaces {
     return true;
   }
 
+  /**
+   * Sets app API token
+   *
+   * @param string token: App's unique API token
+   */
   setAppToken(token: string) {
     this._configuration.appToken = token;
     this._auth.appToken = token;
@@ -57,7 +62,7 @@ export class Spaces {
         return 'https://mmx-spaces-api-prod.herokuapp.com';
       case environmentTypes.stage:
         return 'https://mmx-spaces-api-stage.herokuapp.com';
-      case environmentTypes.localhost:
+      case environmentTypes.local:
         return 'http://localhost:5000';
       default:
         console.error('Unknown environment');
@@ -65,6 +70,11 @@ export class Spaces {
     }
   }
 
+  /**
+   * Checks if user is logged in
+   *
+   * @returns bool: Returns flag that tells if user is authenticated
+   */
   isLoggedIn(): bool {
     if (!this._isConfigured()) {
       return false;
@@ -72,13 +82,25 @@ export class Spaces {
     return this._auth.isAuthorized();
   }
 
-  login(email: string, password: string, completion: (token: ?string, success: bool)=>void) {
+  /**
+   * Login user using standard email/password credentials
+   *
+   * @param string email: Users unique email
+   * @param string password: Users secret password
+   * @param Object completion: Completion function that returns user token andd success flag
+   */
+  login(email: string,
+        password: string,
+        completion: (token: ?string, success: bool) => void) {
     if (!this._isConfigured()) {
       return;
     }
     this._auth.login(email, password, completion);
   }
 
+  /**
+   * Logout user. Removes user token from local storage.
+   */
   logout() {
     if (!this._isConfigured()) {
       return;
@@ -86,7 +108,20 @@ export class Spaces {
     this._auth.deauthorize();
   }
 
-  createCollectionSpace(tag: string, autodump: bool, completion: (space: ?Space, success: bool) => void) {
+  //////////////////////////////////////////////////////////////////////
+  // Spaces Handler
+  //////////////////////////////////////////////////////////////////////
+
+  /**
+   * Creates collection space
+   *
+   * @param string tag: Caption of new space
+   * @param bool autodump: True if new space should be autodumped
+   * @param Object completion: Completion handler that will get created space and success flag
+   */
+  createCollectionSpace(tag: string,
+                        autodump: bool,
+                        completion: (space: ?Space, success: bool) => void) {
     let space = new Space();
     space.tagLabel = tag;
     space.tagColor = null;
@@ -95,7 +130,16 @@ export class Spaces {
     this.createSpace(space, autodump, completion);
   }
 
-  createImageSpace(imageURL: string, autodump: bool, completion: (space: ?Space, success: bool) => void) {
+  /**
+   * Creates image space from URL
+   *
+   * @param string url: Source URL of image
+   * @param bool autodump: True if new space should be autodumped
+   * @param Object completion: Completion handler that will get created space and success flag
+   */
+  createImageSpace(imageURL: string,
+                   autodump: bool,
+                   completion: (space: ?Space, success: bool) => void) {
     let media = new Media();
     media.dataDownloadURL = imageURL;
     media.dataState = mediaDataStates.dataValid;
@@ -108,7 +152,16 @@ export class Spaces {
     this.createSpace(space, autodump, completion);
   }
 
-  createWebPageSpace(url: string, autodump: bool, completion: (space: ?Space, success: bool) => void) {
+  /**
+   * Creates webpage space from URL
+   *
+   * @param string url: URL of webpage
+   * @param bool autodump: True if new space should be autodumped
+   * @param Object completion: Completion handler that will get created space and success flag
+   */
+  createWebPageSpace(url: string,
+                     autodump: bool,
+                     completion: (space: ?Space, success: bool) => void) {
     let media = new Media();
     media.setEmbedDataFromString(url);
     media.dataState = mediaDataStates.dataValid;
@@ -121,7 +174,16 @@ export class Spaces {
     this.createSpace(space, autodump, completion);
   }
 
-  createTextSpace(text: string, autodump: bool, completion: (space: ?Space, success: bool) => void) {
+  /**
+   * Creates text space
+   *
+   * @param string text: Content text
+   * @param bool autodump: True if new space should be autodumped
+   * @param Object completion: Completion handler that will get created space and success flag
+   */
+  createTextSpace(text: string,
+                  autodump: bool,
+                  completion: (space: ?Space, success: bool) => void) {
     let media = new Media();
     media.setEmbedDataFromString(text);
     media.dataState = mediaDataStates.dataValid;
@@ -134,13 +196,26 @@ export class Spaces {
     this.createSpace(space, autodump, completion);
   }
 
-  createSpace(space: Space, autodump: bool, completion: (space: ?Space, success: bool) => void) {
+  /**
+   * Creates space
+   *
+   * @param Space space: New space
+   * @param bool autodump: True if new space should be autodumped (always synchronously)
+   * @param Object completion: Completion handler that will get created space and success flag
+   */
+  createSpace(space: Space,
+              autodump: bool,
+              completion: (space: ?Space, success: bool) => void) {
     let body = {
       space: space.toJSON(),
       process: "sync",
       autodump: autodump
     };
-    this._perform(methods.POST, 'spaces', null, body, (json: ?Object, success: bool) => {
+    this._perform(methods.POST,
+                  'spaces',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -151,7 +226,41 @@ export class Spaces {
     });
   }
 
-  getSpaceLinks(spaceMUID: string, completion: (links: ?Array<Link>, success: bool)=>void) {
+  /**
+   * Get space
+   *
+   * @param string spaceMUID: Requested space MUID (or you can use keyword 'origin' for fetching users's origin space)
+   * @param Object completion: Completion handler that will get space and success flag
+   */
+  getSpace(spaceMUID: string, completion: (space: ?Space, success: bool)=>void) {
+    this._perform(
+      methods.GET,
+      'spaces/'+spaceMUID,
+      null,
+      null,
+      (json: ?Object, success: bool) => {
+        if (success === false || json == null) {
+          completion(null, false);
+          return;
+        }
+        let space = new Space();
+        space.fromJSON(json.space);
+        completion(space, true);
+      });
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // Links Handler
+  //////////////////////////////////////////////////////////////////////
+
+  /**
+   * Get space links
+   *
+   * @param string spaceMUID: Requested space MUID (or you can use keyword 'origin' for fetching users's origin space)
+   * @param Object completion: Completion handler that will get array of links and success flag
+   */
+  getSpaceLinks(spaceMUID: string,
+                completion: (links: ?Array<Link>, success: bool)=>void) {
     let path = 'spaces/'+spaceMUID+'/links';
     let query = {
       includeTarget: true
@@ -171,23 +280,15 @@ export class Spaces {
     });
   }
 
-  getSpace(spaceMUID: string, completion: (space: ?Space, success: bool)=>void) {
-    this._perform(
-      methods.GET,
-      'spaces/'+spaceMUID,
-      null,
-      null,
-      (json: ?Object, success: bool) => {
-        if (success === false || json == null) {
-          completion(null, false);
-          return;
-        }
-        let space = new Space();
-        space.fromJSON(json.space);
-        completion(space, true);
-      });
-  }
+  //////////////////////////////////////////////////////////////////////
+  // App Handler
+  //////////////////////////////////////////////////////////////////////
 
+  /**
+   * Get all users apps
+   *
+   * @param Object completion: Completion handler that will get array of all users apps and success flag
+   */
   getApps(completion: (apps: ?Array<App>, success: bool)=>void) {
     let path = 'apps';
     this._perform(methods.GET, path, {}, null, (json: ?Object, success: bool) => {
@@ -205,6 +306,12 @@ export class Spaces {
     });
   }
 
+  /**
+   * New app creation
+   *
+   * @param App app: New app object
+   * @param Object completion: Completion handler that will get created app and success flag
+   */
   createApp(app: App, completion: (app: ?App, success: bool) => void) {
     let body = {
       app: app.toJSON(),
@@ -220,6 +327,12 @@ export class Spaces {
     });
   }
 
+  /**
+   * Update app
+   *
+   * @param App app: Updated app object
+   * @param Object completion: Completion handler that will get updated app and success flag
+   */
   updateApp(app: App, completion: (app: ?App, success: bool) => void) {
     if (app.id === null) {
       console.error("Missing app id");
@@ -229,7 +342,11 @@ export class Spaces {
     let body = {
       app: app.toJSON(),
     };
-    this._perform(methods.POST, 'apps/'+app.id, null, body, (json: ?Object, success: bool) => {
+    this._perform(methods.POST,
+                  'apps/'+app.id,
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -240,8 +357,18 @@ export class Spaces {
     });
   }
 
+  /**
+   * Renew app token. Will generate new app token (all clients that uses old one will stop working!!)
+   *
+   * @param number appID: App ID
+   * @param Object completion: Completion handler that will get updated app and success flag
+   */
   renewAppToken(appID: number, completion: (app: ?App, success: bool) => void) {
-    this._perform(methods.POST, 'apps/'+appID+"/renew-token", null, {}, (json: ?Object, success: bool) => {
+    this._perform(methods.POST,
+                  'apps/'+appID+"/renew-token",
+                  null,
+                  {},
+                  (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -252,8 +379,17 @@ export class Spaces {
     });
   }
 
+  /**
+   * Get app detail
+   *
+   * @param number id: Fetched App ID
+   * @param Object completion: Completion handler that will get app and success flag
+   */
   getApp(id: number, completion: (app: ?App, success: bool) => void) {
-    this._perform(methods.GET, 'apps/'+id, null, null, (json: ?Object, success: bool) => {
+    this._perform(methods.GET, 'apps/'+id,
+                  null,
+                  null,
+                  (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -264,11 +400,25 @@ export class Spaces {
     });
   }
 
+  //////////////////////////////////////////////////////////////////////
+  // User Handler
+  //////////////////////////////////////////////////////////////////////
+
+  /**
+   * Update user. For password updates use setUserPassword function.
+   *
+   * @param User user: Updated user object
+   * @param Object completion: Completion handler that will return update user object and success flag
+   */
   updateUser(user: User, completion: (app: ?User, success: bool) => void) {
     var body = {
       user: user.toJSON()
     };
-    this._perform(methods.POST, 'users/self', null, body, (json: ?Object, success: bool) => {
+    this._perform(methods.POST,
+                  'users/self',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -279,11 +429,21 @@ export class Spaces {
     });
   }
 
+  /**
+   * Creates new user. User object must contains password and valid email.
+   *
+   * @param User user: New user object
+   * @param Object completion: Completion handler that will return new user object and success flag
+   */
   createUser(user: User, completion: (app: ?User, success: bool) => void) {
     var body = {
       user: user.toJSON()
     };
-    this._perform(methods.POST, 'users', null, body, (json: ?Object, success: bool) => {
+    this._perform(methods.POST,
+                  'users',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -294,8 +454,17 @@ export class Spaces {
     });
   }
 
+  /**
+   * Fetch user detail.
+   *
+   * @param number userID: Optional user ID. If null then you will get authenticated user detail.
+   * @param Object completion: Completion handler that will return requested user object and success flag
+   */
   getUser(userID: ?number, completion: (app: ?User, success: bool) => void) {
-    this._perform(methods.GET, 'users/' + (userID == null ? 'self' : userID), null, null, (json: ?Object, success: bool) => {
+    this._perform(methods.GET, 'users/' + (userID == null ? 'self' : userID),
+                  null,
+                  null,
+                  (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -306,12 +475,25 @@ export class Spaces {
     });
   }
 
-  setUserPassword(oldPassword: ?string, newPassword: string, completion: (success: bool) => void) {
+  /**
+   * Sets user password.
+   *
+   * @param string oldPassword: Old user's password (if any exists - user was not authenticated by onboarding token)
+   * @param string newPassword: New password
+   * @param Object completion: Completion handler that will return only success flag
+   */
+  setUserPassword(oldPassword: ?string,
+                  newPassword: string,
+                  completion: (success: bool) => void) {
     var body = {
       old_password: oldPassword,
       new_password: newPassword
     };
-    this._perform(methods.POST, 'users/self/change-password', null, body, (json: ?Object, success: bool) => {
+    this._perform(methods.POST,
+                  'users/self/change-password',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
       if (success === false) {
         completion(false);
         return;
@@ -320,21 +502,29 @@ export class Spaces {
     });
   }
 
-  _perform(method: Method, path: string, query: ?Object, body: ?Object, completion: (json: ?Object, success: bool) => void) {
+  //////////////////////////////////////////////////////////////////////
+  // Shared
+  //////////////////////////////////////////////////////////////////////
+
+  _perform(method: Method, path: string, query: ?Object, body: ?Object,
+           completion: (json: ?Object, success: bool) => void) {
     if (!this._isConfigured()) {
       return;
+    }
+
+    let headers: Object = {
+      'Content-Type': 'application/json',
+      'X-App-Token': this._configuration.appToken
+    }
+    if (this._auth.userToken != null) {
+      headers['X-User-Token'] = this._auth.userToken;
     }
     let options = {
       method: method,
       body: body != null ? JSON.stringify(body) : null,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-App-Token': this._configuration.appToken
-      }
+      headers: headers
     };
-    if (this._auth.userToken != null) {
-      options.headers['X-User-Token'] = this._auth.userToken;
-    }
+
     let host = this._APIURL(this._configuration.environment);
     let url = host + '/' + path;
     let resultQuery = query;
