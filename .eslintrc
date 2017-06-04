@@ -9,6 +9,11 @@
     "es6": true,
     "node": true
   },
+  "settings": {
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": true
+    }
+  },
   "globals": {
     "document": false,
     "escape": false,
@@ -22,7 +27,11 @@
     "sinon": true
   },
   "parser": "babel-eslint",
-  "plugins": [],
+  "plugins": [
+    "babel",
+    "react",
+    "flowtype"
+  ],
   "rules": {
   }
 }

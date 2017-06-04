@@ -4,12 +4,18 @@ import type { EntityState } from './Types.js';
 import { entityStates } from './Types.js';
 import Space from './Space.js';
 
+/** Class represents link between two spaces. */
 export default class Link {
 
+  /** Unique link identifier */
   muid: ?string;
+  /** Link visibility state */
   state: EntityState;
+  /** Sequence order index is used for reordering of links in space */
   order: ?number;
+  /** Origin space */
   origin: Space;
+  /** Target space */
   target: Space;
 
   constructor() {
