@@ -142,18 +142,10 @@ Memex.sharedClient.getSpace(this.props.originMuid, (space: ?Memex.Space, success
 ```javascript
 Memex.sharedClient.getSpaceLinks(muid, (links: ?Array<Memex.Link>, success: bool) => {
       if (success === false) {
-        this.setState({
-          loading: false,
-          errorMessage: 'Unable to load links',
-          links: null
-        });
+        // failure
         return;
       }
-      this.setState({
-        loading: false,
-        errorMessage: null,
-        links: links
-      });
+      // success, show links to user
     });
 ```
 
