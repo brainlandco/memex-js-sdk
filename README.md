@@ -195,6 +195,10 @@ Each function of SDK is documented using JSDoc. See generated [documentation](ht
 
 ## Other Platform APIs
 
-[REST API](https://github.com/memexapp/memex-rest-api-doc) 
-[Swift SDK](https://github.com/memexapp/memex-swift-sdk)  
-[Go SDK](https://github.com/memexapp/memex-go-sdk)  
+* [REST API](https://github.com/memexapp/memex-rest-api-doc)  
+* [Swift SDK](https://github.com/memexapp/memex-swift-sdk)  
+* [Go SDK](https://github.com/memexapp/memex-go-sdk)  
+
+## Contact Us
+
+If you need any other help please contact us at [hello@memex.co](mailto:hello@memex.co)  
