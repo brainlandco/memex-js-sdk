@@ -100,8 +100,7 @@ import Memex from 'memex-js-sdk';
 In your app.js or any place where you bootstrap your libraries place this line.
 
 ```javascript
-Memex.sharedClient
-.setAppToken('<YOUR APP TOKEN>');
+Memex.sharedClient.setAppToken('<YOUR APP TOKEN>');
 ```
 
 ## Examples
