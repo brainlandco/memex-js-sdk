@@ -60,6 +60,19 @@ class Media {
 }
 ```
 
+## Smart Fetaures
+
+Today memex supports two smart features that will help user to automatically manage his content.
+
+#### Auto-Categorization (Autodump)
+
+First one is called autodump and will automatically link new space with most fitting already existing space. Eg. If user drops webpage url and there already exists similar collection of spaces then Memex will try to automatically create link from this collection to newly created space. See Examples section.
+
+#### Auto-Captioning
+
+Are you creating collection of spaces but dont know how to name it?Another smart feature that is offered by Memex is automatic captioning/summarization of space. Just provide set of space MUIDs and we will tell you what is the best name for it.
+
+
 ## Setup
 ### 1. Create app and get your app token
 
@@ -170,24 +183,6 @@ space.caption = ...
 space.representations = ...
 Memex.sharedClient.createSpace(space, false, completion);
 ```
-
-## Smart Fetaures
-
-Today memex supports two smart features that will help user to automatically manage his content.
-
-#### Auto-Categorization (Autodump)
-
-First one is called autodump and will automatically link new space with most fitting already existing space. Eg. If user drops (using `createWebPageSpace`, `createTextSpace` or `createImageSpace`) and there already exists similar collection of spaces then Memex will try to automatically create link from this collection to newly created space.
-
-```javascript
-let autodump = true;
-Memex.sharedClient.createSpace(space, autodump, completion);
-```
-
-#### Auto-Captioning
-
-Are you creating collection of spaces but dont know how to name it?Another smart feature that is offered by Memex is automatic captioning/summarization of space. Just provide set of space MUIDs and we will tell you what is the best name for it.
-
 
 ## Documentation
 
