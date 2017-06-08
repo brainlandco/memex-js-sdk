@@ -3,7 +3,7 @@
 
 ## What is Memex?
 
-Memex is lightweight personal knowladge base with automatic content management. It means that it helps organise every piece of knowledge (notes, urls, sketches, comments, etc.). These pieces (spaces) are interconnected using memory links which helps to navigate and associate it into more compact knowledge. It is just like web but more lightweight and only personal. 
+Memex is lightweight personal knowladge base with automatic content management. It means that it helps organise every piece of knowledge (notes, urls, sketches, comments, etc.). These pieces (spaces) are interconnected using memory links which helps to navigate and associate it into more compact knowledge. It is just like web but more lightweight and only personal.
 
 ### Space
 Core concept of Memex is space which is bundle/collection/folder of small pieces of knowledge. It can be piece of text (text space) note or large collection of links to other collections (collection space).
@@ -141,12 +141,12 @@ Memex.sharedClient.getSpace(this.props.originMuid, (space: ?Memex.Space, success
 
 ```javascript
 Memex.sharedClient.getSpaceLinks(muid, (links: ?Array<Memex.Link>, success: bool) => {
-      if (success === false) {
-        // failure
-        return;
-      }
-      // success, show links to user
-    });
+  if (success === false) {
+    // failure
+  	return;
+  }
+  // success, show links to user
+});
 ```
 
 
