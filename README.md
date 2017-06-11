@@ -21,7 +21,7 @@ Space has wollowing structure:
 
 ```javascript
 class Space {
-  muid: ?string;
+  MUID: ?string;
   spaceType: SpaceType;
   caption: ?string;
   representations: ?Array<Media>;
@@ -36,7 +36,7 @@ Another core principle of memex is link which is nothing more than connection be
 
 ```javascript
 class Link {
-  muid: ?string;
+  MUID: ?string;
   origin: Space;
   target: Space;
   state: EntityState;
@@ -49,7 +49,7 @@ Piece of data that can be users avatar or image/textual representation of space.
 
 ```javascript
 class Media {
-  muid: ?string;
+  MUID: ?string;
   state: EntityState;
   mediaType: MediaType;
   embedData: ?ArrayBuffer;

@@ -10,17 +10,29 @@ import utf8 from 'utf8';
 export default class Media {
 
   /** Unique media identifier */
-  muid: ?string;
-  /** Media visibility state */
+  MUID: ?string;
+  /** Creation timestamp */
+  createdAt: ?Date;
+  /** Timestamp of last update */
+  updatedAt: ?Date;
+  /** Visibility state */
   state: EntityState;
-  /** Media type */
+  /** JSON encodec dictionary of media metadata eg. size, encoding, etc. */
+  metadata: ?string;
+  /** Semantic type of media (reference, source, thumbnail, summary, etc.) */
   mediaType: MediaType;
-  /** Embed media binary data */
-  embedData: ?ArrayBuffer;
-  /** Data download URL */
-  dataDownloadURL: ?string;
-  /** State of data in embedData or dataDownloadURL */
+  /** Owner user ID */
+  ownerID: ?number;
+  /** If media represents any space then its MUID is present */
+	representedSpaceMUID: ?string;
+  /** Validity of media data */
   dataState: MediaDataState;
+  /** Embed media binary data (only if small enough, otherwise use dataDownloadURL and dataUploadURL) */
+  embedData: ?ArrayBuffer;
+  /** Download url for data (exclusive with embedData) */
+  dataDownloadURL: ?string;
+  /** Upload link for new data. After data is uploaded it is needed to call mark media as uploaded function. */
+  dataUploadURL: ?string;
 
   constructor() {
     this.state = entityStates.unknown;
@@ -92,7 +104,7 @@ export default class Media {
   }
 
   fromJSON(json: Object) {
-    this.muid = json.muid;
+    this.MUID = json.muid;
     this.state = json.state;
     this.mediaType = json.type;
     this.dataState = json.data_state;
@@ -102,6 +114,7 @@ export default class Media {
       this.embedData = null;
     }
     this.dataDownloadURL = json.data_download_url;
+    this.dataUploadURL = json.data_upload_url;
   }
 
   toJSON(): Object {

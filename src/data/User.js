@@ -34,7 +34,7 @@ export default class User {
       password: this.password
     }
     if (this.avatar != null) {
-      object.avatar_muid = this.avatar.muid;
+      object.avatar_muid = this.avatar.MUID;
     }
     return object;
   }

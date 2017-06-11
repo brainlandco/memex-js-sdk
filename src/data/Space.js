@@ -8,7 +8,7 @@ import { spaceTypes, entityStates } from './Types.js';
 export default class Space {
 
   /** Unique space identifier */
-  muid: ?string;
+  MUID: ?string;
   /** Visibility state of space */
   state: EntityState;
   /** Caption/name of space */
@@ -48,7 +48,7 @@ export default class Space {
   }
 
   fromJSON(json: Object) {
-    this.muid = json.muid;
+    this.MUID = json.muid;
     this.state = json.state;
     this.tagLabel = json.tag_label;
     this.tagColor = json.tag_color;
