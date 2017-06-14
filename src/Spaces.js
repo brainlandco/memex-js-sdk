@@ -9,9 +9,10 @@ import User from './data/User.js';
 import Space from './data/Space.js';
 import Link from './data/Link.js';
 import App from './data/App.js';
-import { mediaTypes, mediaDataStates, spaceTypes } from './data/Types.js';
-import type { EnvironmentType, Configuration } from './data/Configuration.js';
-import { environmentTypes } from './data/Configuration.js';
+import { mediaTypes, mediaDataStates } from './data/Media.js';
+import { spaceTypes } from './data/Space.js';
+import type { EnvironmentType, Configuration } from './data/Types.js';
+import { environmentTypes } from './data/Types.js';
 
 type Method = string;
 const methods = {
@@ -123,8 +124,8 @@ export class Spaces {
                         autodump: bool,
                         completion: (space: ?Space, success: bool) => void) {
     let space = new Space();
-    space.tagLabel = tag;
-    space.tagColor = null;
+    space.caption = tag;
+    space.color = null;
     space.spaceType = spaceTypes.collection;
     space.representations = [];
     this.createSpace(space, autodump, completion);

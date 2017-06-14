@@ -1,25 +1,49 @@
 // @flow
 
 import Media from './Media.js';
-import type { SpaceType, MediaType, EntityState } from './Types.js';
-import { spaceTypes, entityStates } from './Types.js';
+import type { MediaType } from './Media.js';
+import type { EntityState } from './Types.js';
+import { entityStates } from './Types.js';
+
+/** Defines known space types */
+export type SpaceType = string;
+export const spaceTypes = {
+  /** Origin is simillar to collection but defines entry point into users spaces (root) */
+  origin: 'com.memex.origin',
+  /** Collection of links to spaces */
+  collection: 'com.memex.media.collection',
+  /** Space that represents web link */
+  webPage: 'com.memex.media.webpage',
+  /** Graphical kind of space */
+  image: 'com.memex.media.image',
+  /** Textual kind of space */
+  text: 'com.memex.media.text'
+};
 
 /** Class represents space (abstraction for linked spaces) */
 export default class Space {
 
-  /** Unique space identifier */
+  /** Unique identifier */
   MUID: ?string;
-  /** Visibility state of space */
+  /** Creation timestamp */
+  createdAt: ?Date;
+  /** Timestamp of last update */
+  updatedAt: ?Date;
+  /** Timestamp of last visit */
+  visitedAt: ?Date;
+  /** Visibility state */
   state: EntityState;
-  /** Caption/name of space */
-  tagLabel: ?string;
-  /** Each space can define its tintColor */
-  tagColor: ?string;
-  /** Defines semantic type of space (eg. com.memex.media.collection, etc.) */
+  /** Owner user ID */
+  ownerID: ?number;
+  /** Type (eg. com.memex.media.collection, etc.) */
   spaceType: SpaceType;
-  /** Set of space representations (media that defines space at most concrete level) */
+  /** Caption */
+  caption: ?string;
+  /** Tint color */
+  color: ?string;
+  /** Set of media that represents space (eg webpage space is represented by url, thumbnail, summary) */
   representations: ?Array<Media>;
-  /** Space unread flag */
+  /** Unread flag (if user needs to be notified about changes)*/
   unread: bool;
 
   constructor() {
@@ -50,8 +74,8 @@ export default class Space {
   fromJSON(json: Object) {
     this.MUID = json.muid;
     this.state = json.state;
-    this.tagLabel = json.tag_label;
-    this.tagColor = json.tag_color;
+    this.caption = json.tag_label;
+    this.color = json.tag_color;
     this.spaceType = json.type_identifier;
     this.unread = json.unread || false;
     if (json.representations != null) {
@@ -69,8 +93,8 @@ export default class Space {
     return {
       type_identifier: this.spaceType,
       state: this.state,
-      tag_label: this.tagLabel,
-      tag_color: this.tagColor,
+      tag_label: this.caption,
+      tag_color: this.color,
       unread: this.unread,
       representations: this.representations != null ? this.representations.map(function(media: Media): Object {
         return media.toJSON();

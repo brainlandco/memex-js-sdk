@@ -2,7 +2,7 @@
 
 import 'whatwg-fetch';
 
-import type { Configuration } from './data/Configuration.js';
+import type { Configuration } from './data/Types.js';
 
 type AuthReponse = {
   token: ?string;

@@ -1,10 +1,34 @@
 // @flow
 
-import type { MediaType, MediaDataState, EntityState } from './Types.js';
-import { mediaDataStates, mediaTypes, entityStates } from './Types.js';
+import type { EntityState } from './Types.js';
+import { entityStates } from './Types.js';
 
 import base64 from 'base-64';
 import utf8 from 'utf8';
+
+/** Type of media */
+export type MediaType = string;
+export const mediaTypes = {
+  /** Source of data (every other representation can be derived from it). */
+  source: 'source',
+  /** Reference is link to source */
+  reference: 'reference',
+  /** Preview is visual/graphical abstraction of source/reference */
+  preview: 'preview',
+  /** Summary is textual abstraction of source/reference */
+  summary: 'summary'
+};
+
+/** Media data upload state */
+export type MediaDataState = number;
+export const mediaDataStates = {
+  /** Client is waiting for server to generate signed dataUploadURL */
+  waitingForNewUploadURL: 0,
+  /** Data Upload URL is valid and client can upload data */
+  readyForDataUpload: 1,
+  /** Data is valid and can be downloaded/used */
+  dataValid: 2
+};
 
 /** Class represents media component of space */
 export default class Media {
@@ -19,8 +43,8 @@ export default class Media {
   state: EntityState;
   /** JSON encodec dictionary of media metadata eg. size, encoding, etc. */
   metadata: ?string;
-  /** Semantic type of media (reference, source, thumbnail, summary, etc.) */
-  mediaType: MediaType;
+  /** Type of media */
+  mediaType: ?MediaType;
   /** Owner user ID */
   ownerID: ?number;
   /** If media represents any space then its MUID is present */
@@ -28,16 +52,14 @@ export default class Media {
   /** Validity of media data */
   dataState: MediaDataState;
   /** Embed media binary data (only if small enough, otherwise use dataDownloadURL and dataUploadURL) */
-  embedData: ?ArrayBuffer;
+  embededData: ?ArrayBuffer;
   /** Download url for data (exclusive with embedData) */
   dataDownloadURL: ?string;
   /** Upload link for new data. After data is uploaded it is needed to call mark media as uploaded function. */
   dataUploadURL: ?string;
 
   constructor() {
-    this.state = entityStates.unknown;
-    this.dataState = mediaDataStates.unknown;
-    this.mediaType = mediaTypes.source;
+    this.state = entityStates.visible;
   }
 
   /**
@@ -52,7 +74,7 @@ export default class Media {
     for (let i = 0; i < length; i++) {
       bytes[i] = binaryString.charCodeAt(i);
     }
-    this.embedData = bytes.buffer;
+    this.embededData = bytes.buffer;
   }
 
   /**
@@ -66,9 +88,8 @@ export default class Media {
     for (let index = 0; index < length; index++) {
       array[index] = value.charCodeAt(index);
     }
-    this.embedData = array.buffer;
+    this.embededData = array.buffer;
   }
-
 
   /**
    * Converts emebedData into base64 encoded string
@@ -111,7 +132,7 @@ export default class Media {
     if (json.embeded_data != null) {
       this.setEmbedDataFromBase64(json.embeded_data);
     } else {
-      this.embedData = null;
+      this.embededData = null;
     }
     this.dataDownloadURL = json.data_download_url;
     this.dataUploadURL = json.data_upload_url;

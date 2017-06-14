@@ -1,7 +1,32 @@
 // @flow
 
-import type { AppState, AppPlatform } from './Types.js';
-import { appStates } from './Types.js';
+/** Approval state of app  */
+export type AppState = number;
+export const appStates = {
+  /** App is new and review wasn't requested yet */
+  new: 0,
+  /** Appr review is requested */
+  requested: 1,
+  /** App was approved and will get higher limits */
+  approved: 2,
+  /** App was rejected by reviewer */
+  rejected: 3,
+  /** App was blocked by admin */
+  blocked: 4
+};
+
+/** Platform/language of SDK */
+export type AppPlatform = number;
+export const appPlatforms = {
+  /** Native REST API */
+  rest: 0,
+  /** Swift */
+  swift: 1,
+  /** JavaScript */
+  javaScript: 2,
+  /** Go */
+  golang: 3
+};
 
 /** Class representing app. */
 export default class App {

@@ -1,17 +1,21 @@
 // @flow
 
 import { Spaces } from './Spaces.js';
-import { environmentTypes } from './data/Configuration.js';
 import User from './data/User.js';
 import Media from './data/Media.js';
 import Space from './data/Space.js';
 import Link from './data/Link.js';
 import App from './data/App.js';
-import { mediaTypes, mediaDataStates, spaceTypes, appPlatforms } from './data/Types.js';
-import type { MediaType, MediaDataState, SpaceType, AppPlatform } from './data/Types.js';
+import { environmentTypes } from './data/Types.js';
+import { mediaTypes, mediaDataStates } from './data/Media.js';
+import { spaceTypes } from './data/Space.js';
+import { appPlatforms } from './data/App.js';
+import type { MediaType, MediaDataState } from './data/Media.js';
+import type { SpaceType } from './data/Space.js';
+import type { AppPlatform } from './data/App.js';
 
 var Memex = {
-  /** Shared instance of Spaces */   
+  /** Shared instance of Spaces */
   sharedClient: new Spaces(),
   environmentTypes: environmentTypes,
   mediaTypes: mediaTypes,

@@ -13,8 +13,6 @@ export default class Link {
   createdAt: ?Date;
   /** Timestamp of last update */
   updatedAt: ?Date;
-  /** Timestamp of last visit */
-  visitedAt: ?Date;
   /** Visibility state */
   state: EntityState;
   /** Owner user ID */
