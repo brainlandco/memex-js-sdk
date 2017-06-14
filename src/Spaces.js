@@ -329,6 +329,27 @@ export class Spaces {
   }
 
   /**
+   * Get app detail
+   *
+   * @param number id: Fetched App ID
+   * @param Object completion: Completion handler that will get app and success flag
+   */
+  getApp(id: number, completion: (app: ?App, success: bool) => void) {
+    this._perform(methods.GET, 'apps/'+id,
+                  null,
+                  null,
+                  (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let newApp = new App();
+      newApp.fromJSON(json.app);
+      completion(newApp, true);
+    });
+  }
+
+  /**
    * Update app
    *
    * @param App app: Updated app object
@@ -380,45 +401,20 @@ export class Spaces {
     });
   }
 
-  /**
-   * Get app detail
-   *
-   * @param number id: Fetched App ID
-   * @param Object completion: Completion handler that will get app and success flag
-   */
-  getApp(id: number, completion: (app: ?App, success: bool) => void) {
-    this._perform(methods.GET, 'apps/'+id,
-                  null,
-                  null,
-                  (json: ?Object, success: bool) => {
-      if (success === false || json == null) {
-        completion(null, false);
-        return;
-      }
-      let newApp = new App();
-      newApp.fromJSON(json.app);
-      completion(newApp, true);
-    });
-  }
-
   //////////////////////////////////////////////////////////////////////
   // User Handler
   //////////////////////////////////////////////////////////////////////
 
   /**
-   * Update user. For password updates use setUserPassword function.
+   * Fetch user detail.
    *
-   * @param User user: Updated user object
-   * @param Object completion: Completion handler that will return update user object and success flag
+   * @param number userID: Optional user ID. If null then you will get authenticated user detail.
+   * @param Object completion: Completion handler that will return requested user object and success flag
    */
-  updateUser(user: User, completion: (app: ?User, success: bool) => void) {
-    var body = {
-      user: user.toJSON()
-    };
-    this._perform(methods.POST,
-                  'users/self',
+  getUser(userID: ?number, completion: (user: ?User, success: bool) => void) {
+    this._perform(methods.GET, 'users/' + (userID == null ? 'self' : userID),
                   null,
-                  body,
+                  null,
                   (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
@@ -434,11 +430,13 @@ export class Spaces {
    * Creates new user. User object must contains password and valid email.
    *
    * @param User user: New user object
+   * @param string onboardingToken: Onboarding token (optional)
    * @param Object completion: Completion handler that will return new user object and success flag
    */
-  createUser(user: User, completion: (app: ?User, success: bool) => void) {
+  createUser(user: User, onboardingToken: ?string, completion: (user: ?User, success: bool) => void) {
     var body = {
-      user: user.toJSON()
+      user: user.toJSON(),
+      onboardingToken: onboardingToken
     };
     this._perform(methods.POST,
                   'users',
@@ -456,15 +454,19 @@ export class Spaces {
   }
 
   /**
-   * Fetch user detail.
+   * Update user. For password updates use setUserPassword function.
    *
-   * @param number userID: Optional user ID. If null then you will get authenticated user detail.
-   * @param Object completion: Completion handler that will return requested user object and success flag
+   * @param User user: Updated user object
+   * @param Object completion: Completion handler that will return update user object and success flag
    */
-  getUser(userID: ?number, completion: (app: ?User, success: bool) => void) {
-    this._perform(methods.GET, 'users/' + (userID == null ? 'self' : userID),
+  updateUser(user: User, completion: (user: ?User, success: bool) => void) {
+    var body = {
+      user: user.toJSON()
+    };
+    this._perform(methods.POST,
+                  'users/self',
                   null,
-                  null,
+                  body,
                   (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);

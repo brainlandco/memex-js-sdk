@@ -45,9 +45,7 @@ export class Auth {
     this._storeIntoStorage();
   }
 
-  login(email: string,
-    password: string,
-    completion: (token: ?string, success: bool)=>void) {
+  login(email: string, password: string, completion: (token: ?string, success: bool)=>void) {
     let data = {
       identity: {
         email: email
