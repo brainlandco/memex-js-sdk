@@ -41,14 +41,12 @@ export default class Media {
   updatedAt: ?Date;
   /** Visibility state */
   state: EntityState;
+  /** Owner user ID */
+  ownerID: ?number;
   /** JSON encodec dictionary of media metadata eg. size, encoding, etc. */
   metadata: ?string;
   /** Type of media */
   mediaType: ?MediaType;
-  /** Owner user ID */
-  ownerID: ?number;
-  /** If media represents any space then its MUID is present */
-	representedSpaceMUID: ?string;
   /** Validity of media data */
   dataState: MediaDataState;
   /** Embed media binary data (only if small enough, otherwise use dataDownloadURL and dataUploadURL) */
@@ -57,6 +55,8 @@ export default class Media {
   dataDownloadURL: ?string;
   /** Upload link for new data. After data is uploaded it is needed to call mark media as uploaded function. */
   dataUploadURL: ?string;
+  /** If media represents any space then its MUID is present */
+  representedSpaceMUID: ?string;
 
   constructor() {
     this.state = entityStates.visible;
@@ -126,7 +126,15 @@ export default class Media {
 
   fromJSON(json: Object) {
     this.MUID = json.muid;
+    if (json.created_at != null) {
+      this.createdAt = new Date(json.created_at);
+    }
+    if (json.updated_at != null) {
+      this.updatedAt = new Date(json.updated_at);
+    }
     this.state = json.state;
+    this.ownerID = json.owner_id;
+    this.metadata = json.metadata;
     this.mediaType = json.type;
     this.dataState = json.data_state;
     if (json.embeded_data != null) {
@@ -136,14 +144,27 @@ export default class Media {
     }
     this.dataDownloadURL = json.data_download_url;
     this.dataUploadURL = json.data_upload_url;
+    this.representedSpaceMUID = json.represented_space_muid;
   }
 
   toJSON(): Object {
-    return {
-      type: this.mediaType,
-      data_download_url: this.dataDownloadURL,
-      embeded_data: this.base64EmbedData(),
-      data_state: this.dataState
-    };
+    let json: any = {};
+    json.muid = this.MUID;
+    if (this.createdAt != null) {
+      json.created_at = this.createdAt.toISOString();
+    }
+    if (this.updatedAt != null) {
+      json.updated_at = this.updatedAt.toISOString();
+    }
+    json.state = this.state;
+    json.owner_id = this.ownerID;
+    json.metadata = this.metadata;
+    json.type = this.mediaType;
+    json.data_state = this.dataState;
+    json.embeded_data = this.base64EmbedData();
+    json.data_download_url = this.dataDownloadURL;
+    json.data_upload_url = this.dataUploadURL;
+    json.represented_space_muid = this.representedSpaceMUID;
+    return json;
   }
 }

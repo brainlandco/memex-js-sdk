@@ -47,7 +47,7 @@ export default class Space {
   unread: bool;
 
   constructor() {
-    this.state = entityStates.unknown;
+    this.state = entityStates.visible;
     this.spaceType = spaceTypes.collection;
     this.representations = [];
     this.unread = false;
@@ -73,11 +73,20 @@ export default class Space {
 
   fromJSON(json: Object) {
     this.MUID = json.muid;
+    if (json.created_at != null) {
+      this.createdAt = new Date(json.created_at);
+    }
+    if (json.updated_at != null) {
+      this.updatedAt = new Date(json.updated_at);
+    }
+    if (json.visited_at != null) {
+      this.visitedAt = new Date(json.visited_at);
+    }
     this.state = json.state;
+    this.ownerID = json.owner_id;
+    this.spaceType = json.type_identifier;
     this.caption = json.tag_label;
     this.color = json.tag_color;
-    this.spaceType = json.type_identifier;
-    this.unread = json.unread || false;
     if (json.representations != null) {
       this.representations = json.representations.map(function(json: Object): Media {
         let media = new Media();
@@ -87,18 +96,32 @@ export default class Space {
     } else {
       this.representations = null;
     }
+    this.unread = json.unread || false;
   }
 
   toJSON(): Object {
-    return {
-      type_identifier: this.spaceType,
-      state: this.state,
-      tag_label: this.caption,
-      tag_color: this.color,
-      unread: this.unread,
-      representations: this.representations != null ? this.representations.map(function(media: Media): Object {
+    let json: any = {};
+    json.muid = this.MUID;
+    if (this.createdAt != null) {
+      json.created_at = this.createdAt.toISOString();
+    }
+    if (this.updatedAt != null) {
+      json.updated_at = this.updatedAt.toISOString();
+    }
+    if (this.visitedAt != null) {
+      json.visited_at = this.visitedAt.toISOString();
+    }
+    json.state =  this.state;
+    json.owner_id = this.ownerID;
+    json.type_identifier = this.spaceType;
+    json.tag_label = this.caption;
+    json.tag_color = this.color;
+    if (this.representations != null) {
+      json.representations = this.representations.map(function(media: Media): Object {
         return media.toJSON();
-      }) : null
-    };
+      });
+    }
+    json.unread = this.unread;
+    return json;
   }
 }

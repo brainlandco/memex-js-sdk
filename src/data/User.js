@@ -31,21 +31,39 @@ export default class User {
 
   fromJSON(json: Object) {
     this.ID = json.id;
-    this.email = json.email;
+    if (json.created_at != null) {
+      this.createdAt = new Date(json.created_at);
+    }
+    if (json.updated_at != null) {
+      this.updatedAt = new Date(json.updated_at);
+    }
     this.fullname = json.fullname;
-    this.avatar = json.avatar;
+    this.email = json.email;
     this.password = json.password;
+    this.avatar = json.avatar;
+    this.originSpaceMUID = json.origin_space_muid;
+    this.hasPassword = json.has_password;
+    this.advanced = json.advanced;
   }
 
   toJSON(): Object {
-    let object: any = {
-      email: this.email,
-      fullname: this.fullname,
-      password: this.password
+    let json: any = {};
+    if (this.createdAt != null) {
+      json.created_at = this.createdAt.toISOString();
     }
+    if (this.updatedAt != null) {
+      json.updated_at = this.updatedAt.toISOString();
+    }
+    json.fullname = this.fullname;
+    json.email = this.email;
+    json.password = this.password;
+    json.avatar = this.avatar;
+    json.origin_space_muid = this.originSpaceMUID;
+    json.has_password = this.hasPassword;
+    json.advanced = this.advanced;
     if (this.avatar != null) {
-      object.avatar_muid = this.avatar.MUID;
+      json.avatar_muid = this.avatar.MUID;
     }
-    return object;
+    return json;
   }
 }

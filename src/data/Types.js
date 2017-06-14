@@ -3,8 +3,6 @@
 /** Entity visiblity state */
 export type EntityState = number;
 export const entityStates = {
-  /** State is unknown */
-  unknown: -1,
   /** Entity us visible to user */
   visible: 0,
   /** Entity is trashed and will be deleted soon */
