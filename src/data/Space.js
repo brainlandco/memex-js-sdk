@@ -20,6 +20,17 @@ export const spaceTypes = {
   text: 'com.memex.media.text'
 };
 
+/** Defines space processing modes */
+export type SpaceProcessingMode = string;
+export const spaceProcessingModes = {
+  /** Don't process */
+  no: 'no',
+  /** Wait for results */
+  sync: 'sync',
+  /** Dont wait for results */
+  async: 'async',
+};
+
 /** Class represents space (abstraction for linked spaces) */
 export default class Space {
 

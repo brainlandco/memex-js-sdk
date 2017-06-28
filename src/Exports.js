@@ -4,6 +4,7 @@ import { Spaces } from './Spaces.js';
 import User from './data/User.js';
 import Media from './data/Media.js';
 import Space from './data/Space.js';
+import SpaceVisit from './data/SpaceVisit.js';
 import Link from './data/Link.js';
 import App from './data/App.js';
 import { environmentTypes } from './data/Types.js';
@@ -24,6 +25,7 @@ var Memex = {
   appPlatforms: appPlatforms,
   Media: Media,
   Space: Space,
+  SpaceVisit: SpaceVisit,
   Link: Link,
   App: App,
   User: User,

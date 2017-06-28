@@ -7,10 +7,12 @@ import { Auth } from './Auth.js';
 import Media from './data/Media.js';
 import User from './data/User.js';
 import Space from './data/Space.js';
+import SpaceVisit from './data/SpaceVisit.js';
 import Link from './data/Link.js';
 import App from './data/App.js';
 import { mediaTypes, mediaDataStates } from './data/Media.js';
-import { spaceTypes } from './data/Space.js';
+import { spaceTypes, spaceProcessingModes } from './data/Space.js';
+import type { SpaceProcessingMode } from './data/Space.js';
 import type { EnvironmentType, Configuration } from './data/Types.js';
 import { environmentTypes } from './data/Types.js';
 
@@ -90,13 +92,27 @@ export class Spaces {
    * @param string password: Users secret password
    * @param Object completion: Completion function that returns user token andd success flag
    */
-  login(email: string,
-        password: string,
-        completion: (token: ?string, success: bool) => void) {
+  loginWithCredentials(email: string,
+                       password: string,
+                       completion: (token: ?string, success: bool) => void) {
     if (!this._isConfigured()) {
       return;
     }
-    this._auth.login(email, password, completion);
+    this._auth.loginWithCredentials(email, password, completion);
+  }
+
+  /**
+   * Login user using onboarding token
+   *
+   * @param string onboardingToken: Onboarding token
+   * @param Object completion: Completion function that returns user token andd success flag
+   */
+  loginWithOnboardingToken(onboardingToken: string,
+                           completion: (token: ?string, success: bool) => void) {
+    if (!this._isConfigured()) {
+      return;
+    }
+    this._auth.loginWithOnboardingToken(onboardingToken, completion);
   }
 
   /**
@@ -107,6 +123,80 @@ export class Spaces {
       return;
     }
     this._auth.deauthorize();
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // Media Handler
+  //////////////////////////////////////////////////////////////////////
+
+  /**
+   * New media creation. If there is some data that needs to be uploaded put it to dataUploadURL and call markMediaAsUploaded.
+   *
+   * @param Media media: New media
+   * @param Object completion: Completion handler that will get created media and success flag
+   */
+  createMedia(media: Media,
+              completion: (media: ?Media, success: bool) => void) {
+    let body = {
+      media: media.toJSON(),
+    };
+    this._perform(methods.POST,
+                  'media',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let media = new Media();
+      media.fromJSON(json.media);
+      completion(media, true);
+    });
+  }
+
+  /**
+   * Returns media object. It can be used when dataDownloadURL is expired and new is needed.
+   *
+   * @param string mediaMUID: Requested media MUID
+   * @param Object completion: Completion handler that will get media and success flag
+   */
+  getMedia(mediaMUID: string, completion: (media: ?Media, success: bool)=>void) {
+    this._perform(
+      methods.GET,
+      'media/'+mediaMUID,
+      null,
+      null,
+      (json: ?Object, success: bool) => {
+        if (success === false || json == null) {
+          completion(null, false);
+          return;
+        }
+        let media = new Media();
+        media.fromJSON(json.media);
+        completion(media, true);
+      });
+  }
+
+  /**
+   * Marks media data as uploaded. It means that data was uploaded to dataUploadURL and dataState now can change to valid state.
+   *
+   * @param string mediaMUID: Requested media MUID
+   * @param Object completion: Completion handler
+   */
+  markMediaAsUploaded(mediaMUID: string, completion: (success: bool)=>void) {
+    this._perform(
+      methods.POST,
+      'media/'+mediaMUID+'/mark-as-uploaded',
+      null,
+      null,
+      (json: ?Object, success: bool) => {
+        if (success === false || json == null) {
+          completion(false);
+          return;
+        }
+        completion(true);
+      });
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -128,7 +218,7 @@ export class Spaces {
     space.color = null;
     space.spaceType = spaceTypes.collection;
     space.representations = [];
-    this.createSpace(space, autodump, completion);
+    this.createSpace(space, spaceProcessingModes.sync, autodump, completion);
   }
 
   /**
@@ -150,7 +240,7 @@ export class Spaces {
     space.spaceType = spaceTypes.image;
     space.representations = [media];
 
-    this.createSpace(space, autodump, completion);
+    this.createSpace(space, spaceProcessingModes.sync, autodump, completion);
   }
 
   /**
@@ -172,7 +262,7 @@ export class Spaces {
     space.spaceType = spaceTypes.webPage;
     space.representations = [media];
 
-    this.createSpace(space, autodump, completion);
+    this.createSpace(space, spaceProcessingModes.sync, autodump, completion);
   }
 
   /**
@@ -194,22 +284,24 @@ export class Spaces {
     space.spaceType = spaceTypes.text;
     space.representations = [media];
 
-    this.createSpace(space, autodump, completion);
+    this.createSpace(space, spaceProcessingModes.sync, autodump, completion);
   }
 
   /**
    * Creates space
    *
    * @param Space space: New space
-   * @param bool autodump: True if new space should be autodumped (always synchronously)
+   * @param SpaceProcessingMode process: Defines processing mode
+   * @param bool autodump: True if new space should be autodumped
    * @param Object completion: Completion handler that will get created space and success flag
    */
   createSpace(space: Space,
+              process: SpaceProcessingMode,
               autodump: bool,
               completion: (space: ?Space, success: bool) => void) {
     let body = {
       space: space.toJSON(),
-      process: "sync",
+      process: process,
       autodump: autodump
     };
     this._perform(methods.POST,
@@ -250,9 +342,85 @@ export class Spaces {
       });
   }
 
+  /**
+   * Log space visits
+   *
+   * @param string visits: Array of space visits. Can contain multiple spaces with same MUID.
+   * @param Object completion: Completion handler
+   */
+  logSpaceVisits(visits: Array<SpaceVisit>, completion: (success: bool)=>void) {
+    let body = {
+      spaces: visits.map(function(visit: SpaceVisit): Media {
+        return visit.toJSON();
+      })
+    };
+    this._perform(
+      methods.POST,
+      'spaces/log-visits',
+      null,
+      body,
+      (json: ?Object, success: bool) => {
+        if (success === false || json == null) {
+          completion(false);
+          return;
+        }
+        completion(true);
+      });
+  }
+
+  /**
+   * Returns abstraction (caption) for set of spaces
+   *
+   * @param string muids: Set of space MUIDs for that will be caption generated
+   * @param Object completion: Completion handler
+   */
+  getSpacesAbstract(muids: Array<string>, completion: (caption: ?string, success: bool)=>void) {
+    let body = {
+      space_MUIDs: muids
+    };
+    this._perform(
+      methods.POST,
+      'spaces/abstract',
+      null,
+      body,
+      (json: ?Object, success: bool) => {
+        if (success === false || json == null) {
+          completion(null, false);
+          return;
+        }
+        completion(json.caption, true);
+      });
+  }
+
   //////////////////////////////////////////////////////////////////////
   // Links Handler
   //////////////////////////////////////////////////////////////////////
+
+  /**
+   * NNew link creation.
+   *
+   * @param Link link: New link
+   * @param Object completion: Completion handler that will get created media and success flag
+   */
+  createMedia(link: Link,
+              completion: (link: ?Link, success: bool) => void) {
+    let body = {
+      link: link.toJSON(),
+    };
+    this._perform(methods.POST,
+                  'links',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let link = new Link();
+      link.fromJSON(json.link);
+      completion(link, true);
+    });
+  }
 
   /**
    * Get space links
@@ -284,28 +452,6 @@ export class Spaces {
   //////////////////////////////////////////////////////////////////////
   // App Handler
   //////////////////////////////////////////////////////////////////////
-
-  /**
-   * Get all users apps
-   *
-   * @param Object completion: Completion handler that will get array of all users apps and success flag
-   */
-  getApps(completion: (apps: ?Array<App>, success: bool)=>void) {
-    let path = 'apps';
-    this._perform(methods.GET, path, {}, null, (json: ?Object, success: bool) => {
-      if (success === false || json == null) {
-        completion(null, false);
-        return;
-      }
-      let apps = [];
-      for (let item of json.apps) {
-        let app = new App();
-        app.fromJSON(item);
-        apps.push(app);
-      }
-      completion(apps, true);
-    });
-  }
 
   /**
    * New app creation
@@ -401,30 +547,31 @@ export class Spaces {
     });
   }
 
-  //////////////////////////////////////////////////////////////////////
-  // User Handler
-  //////////////////////////////////////////////////////////////////////
-
   /**
-   * Fetch user detail.
+   * Get all users apps
    *
-   * @param number userID: Optional user ID. If null then you will get authenticated user detail.
-   * @param Object completion: Completion handler that will return requested user object and success flag
+   * @param Object completion: Completion handler that will get array of all users apps and success flag
    */
-  getUser(userID: ?number, completion: (user: ?User, success: bool) => void) {
-    this._perform(methods.GET, 'users/' + (userID == null ? 'self' : userID),
-                  null,
-                  null,
-                  (json: ?Object, success: bool) => {
+  getApps(completion: (apps: ?Array<App>, success: bool)=>void) {
+    let path = 'apps';
+    this._perform(methods.GET, path, {}, null, (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
       }
-      let newUser = new User();
-      newUser.fromJSON(json.user);
-      completion(newUser, true);
+      let apps = [];
+      for (let item of json.apps) {
+        let app = new App();
+        app.fromJSON(item);
+        apps.push(app);
+      }
+      completion(apps, true);
     });
   }
+
+  //////////////////////////////////////////////////////////////////////
+  // User Handler
+  //////////////////////////////////////////////////////////////////////
 
   /**
    * Creates new user. User object must contains password and valid email.
@@ -442,6 +589,27 @@ export class Spaces {
                   'users',
                   null,
                   body,
+                  (json: ?Object, success: bool) => {
+      if (success === false || json == null) {
+        completion(null, false);
+        return;
+      }
+      let newUser = new User();
+      newUser.fromJSON(json.user);
+      completion(newUser, true);
+    });
+  }
+
+  /**
+   * Fetch user detail.
+   *
+   * @param number userID: Optional user ID. If null then you will get authenticated user detail.
+   * @param Object completion: Completion handler that will return requested user object and success flag
+   */
+  getUser(userID: ?number, completion: (user: ?User, success: bool) => void) {
+    this._perform(methods.GET, 'users/' + (userID == null ? 'self' : userID),
+                  null,
+                  null,
                   (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);

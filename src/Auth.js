@@ -45,7 +45,7 @@ export class Auth {
     this._storeIntoStorage();
   }
 
-  login(email: string, password: string, completion: (token: ?string, success: bool)=>void) {
+  loginWithCredentials(email: string, password: string, completion: (token: ?string, success: bool)=>void) {
     let data = {
       identity: {
         email: email
@@ -54,6 +54,19 @@ export class Auth {
         password: password
       }
     };
+    this.login(data, completion);
+  }
+
+  loginWithOnboardingToken(onboardingToken: string, completion: (token: ?string, success: bool)=>void) {
+    let data = {
+      secret: {
+        onboarding_token: onboardingToken
+      }
+    };
+    this.login(data, completion);
+  }
+
+  login(data: Object, completion: (token: ?string, success: bool)=>void) {
     let options = {
       method: 'POST',
       body: JSON.stringify(data),
