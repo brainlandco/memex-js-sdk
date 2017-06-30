@@ -97,11 +97,11 @@ export default class Media {
    * @returns string Base64 encoded embedData
    */
   base64EmbedData(): ?string {
-    if (this.embedData == null) {
+    if (this.embededData == null) {
       return null;
     }
     let binary = '';
-    let bytes = new Uint8Array(this.embedData);
+    let bytes = new Uint8Array(this.embededData);
     let len = bytes.byteLength;
     for (let i = 0; i < len; i++) {
       binary += String.fromCharCode(bytes[i]);
@@ -115,7 +115,7 @@ export default class Media {
    * @returns string Decoded text
    */
   textualEmbedData(): ?string {
-    if (this.embedData == null) {
+    if (this.embededData == null) {
       return null;
     }
     let encoded = this.base64EmbedData();
