@@ -30,9 +30,10 @@ export class Spaces {
   constructor() {
     this._configuration = {
       appToken: "",
-      environment: environmentTypes.production
+      environment: environmentTypes.production,
+      url: null
     }
-    this._setEnvironment(environmentTypes.production)
+    this._setEnvironment(environmentTypes.production, null)
   }
 
   _isConfigured(): bool {
@@ -53,20 +54,24 @@ export class Spaces {
     this._auth.appToken = token;
   }
 
-  _setEnvironment(environment: EnvironmentType) {
+  _setEnvironment(environment: EnvironmentType, url: ?string) {
     this._configuration.environment = environment;
-    this._auth = new Auth(this._APIURL(environment));
+    this._configuration.url = url;
+    this._auth = new Auth(this._APIURL(environment, url));
     this._auth.appToken = this._configuration.appToken;
   }
 
-  _APIURL(environment: EnvironmentType): string {
+  _APIURL(environment: EnvironmentType, url: ?string): string {
+    if (url != null) {
+      return url;
+    }
     switch (environment) {
       case environmentTypes.production:
         return 'https://mmx-spaces-api-prod.herokuapp.com';
       case environmentTypes.stage:
         return 'https://mmx-spaces-api-stage.herokuapp.com';
       case environmentTypes.local:
-        return 'http://localhost:5000';
+        return 'http://localhost:8081';
       default:
         console.error('Unknown environment');
         return '';
@@ -696,7 +701,7 @@ export class Spaces {
       headers: headers
     };
 
-    let host = this._APIURL(this._configuration.environment);
+    let host = this._APIURL(this._configuration.environment, this._configuration.url);
     let url = host + '/' + path;
     let resultQuery = query;
     if (resultQuery != null) {

@@ -25,5 +25,6 @@ export type Configuration = {
   /** App (developer) token */
   appToken: string,
   /** SDK environment */
-  environment: EnvironmentType
+  environment: EnvironmentType,
+  url: ?string
 }
