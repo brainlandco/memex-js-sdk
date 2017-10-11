@@ -827,7 +827,9 @@ export class Spaces {
     let options = {
       method: method,
       body: body != null ? JSON.stringify(body) : null,
-      headers: headers
+      headers: headers,
+      credentials: 'include',
+      mode: 'cors'
     };
 
     let host = this._APIURL(this._configuration.environment, this._configuration.url);

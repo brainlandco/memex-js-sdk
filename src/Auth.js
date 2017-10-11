@@ -59,7 +59,9 @@ export class Auth {
       headers: {
         'Content-Type': 'application/json',
         'X-App-Token': this.appToken
-      }
+      },
+      credentials: 'include',
+      mode: 'cors'
     };
     let url = this._host + '/sessions/create';
 
@@ -89,7 +91,9 @@ export class Auth {
       headers: {
         'Content-Type': 'application/json',
         'X-App-Token': this.appToken
-      }
+      },
+      credentials: 'include',
+      mode: 'cors'
     };
     let url = this._host + '/sessions/invalidate';
 
