@@ -79,18 +79,6 @@ export class Spaces {
   }
 
   /**
-   * Checks if user is logged in
-   *
-   * @returns bool: Returns flag that tells if user is authenticated
-   */
-  isLoggedIn(): bool {
-    if (!this._isConfigured()) {
-      return false;
-    }
-    return this._auth.isAuthorized();
-  }
-
-  /**
    * Login user using standard email/password credentials
    *
    * @param string email: Users unique email
@@ -99,7 +87,7 @@ export class Spaces {
    */
   loginWithCredentials(email: string,
                        password: string,
-                       completion: (token: ?string, success: bool) => void) {
+                       completion: (token: ?string, retryToken: ?string, errorCode: ?number) => void) {
     if (!this._isConfigured()) {
       return;
     }
@@ -113,7 +101,7 @@ export class Spaces {
    * @param Object completion: Completion function that returns user token andd success flag
    */
   loginWithOnboardingToken(onboardingToken: string,
-                           completion: (token: ?string, success: bool) => void) {
+                           completion: (token: ?string, retryToken: ?string, errorCode: ?number) => void) {
     if (!this._isConfigured()) {
       return;
     }
@@ -121,13 +109,26 @@ export class Spaces {
   }
 
   /**
-   * Logout user. Removes user token from local storage.
+   * Login user using two factor authorization retry token
+   *
+   * @param string retryToken: TFA retry token
+   * @param Object completion: Completion function that returns user token andd success flag
    */
-  logout() {
+  loginWithRetryToken(retryToken: string, completion: (token: ?string, errorCode: ?number) => void) {
     if (!this._isConfigured()) {
       return;
     }
-    this._auth.deauthorize();
+    this._auth.loginWithRetryToken(retryToken, completion);
+  }
+
+  /**
+   * Logout user. Removes user token from local storage.
+   */
+  logout(completion: (success: bool)=>void) {
+    if (!this._isConfigured()) {
+      return;
+    }
+    this._auth.logout(completion);
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -667,6 +668,134 @@ export class Spaces {
     };
     this._perform(methods.POST,
                   'users/self/change-password',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
+      if (success === false) {
+        completion(false);
+        return;
+      }
+      completion(true);
+    });
+  }
+
+
+  /**
+   * Request password reset.
+   *
+   * @param string email: Email for request account
+   * @param Object completion: Completion handler that will return only success flag
+   */
+  requestPasswordReset(email: string,
+                       completion: (success: bool) => void) {
+    var body = {
+      email: email
+    };
+    this._perform(methods.POST,
+                  'users/self/request-password-reset',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
+      if (success === false) {
+        completion(false);
+        return;
+      }
+      completion(true);
+    });
+  }
+
+  /**
+   * Reset password.
+   *
+   * @param string resetToken: Password reset token that was recevied by email
+   * @param string newPassword: New password
+   * @param Object completion: Completion handler that will return only success flag
+   */
+  resetPassword(resetToken: string,
+                newPassword: string,
+                completion: (success: bool) => void) {
+    var body = {
+      token: resetToken,
+      new_password: newPassword,
+    };
+    this._perform(methods.POST,
+                  'users/self/reset-password',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
+      if (success === false) {
+        completion(false);
+        return;
+      }
+      completion(true);
+    });
+  }
+
+  /**
+   * Request contact verification.
+   *
+   * @param string type: Contact type
+   * @param string newPassword: New password
+   * @param Object completion: Completion handler that will return only success flag
+   */
+  requestContactVerification(type: string,
+                            completion: (success: bool) => void) {
+    var body = {
+      type: type,
+    };
+    this._perform(methods.POST,
+                  'users/self/contacts/request-verification',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
+      if (success === false) {
+        completion(false);
+        return;
+      }
+      completion(true);
+    });
+  }
+
+  /**
+   * Verify user contact.
+   *
+   * @param string type: Contact type
+   * @param string verificationToken: Verification token
+   * @param Object completion: Completion handler that will return only success flag
+   */
+  verifyContact(type: string,
+                verificationToken: string,
+                completion: (success: bool) => void) {
+    var body = {
+      type: type,
+      token: verificationToken,
+    };
+    this._perform(methods.POST,
+                  'users/self/contacts/verify',
+                  null,
+                  body,
+                  (json: ?Object, success: bool) => {
+      if (success === false) {
+        completion(false);
+        return;
+      }
+      completion(true);
+    });
+  }
+
+  /**
+   * Activate TFA session.
+   *
+   * @param string activationToken: TFA activation token
+   * @param Object completion: Completion handler that will return only success flag
+   */
+  activateTFASession(activationToken: string,
+                completion: (success: bool) => void) {
+    var body = {
+      activation_token: activationToken,
+    };
+    this._perform(methods.POST,
+                  'sessions/activate',
                   null,
                   body,
                   (json: ?Object, success: bool) => {

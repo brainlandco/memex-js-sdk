@@ -6,46 +6,21 @@ import type { Configuration } from './data/Types.js';
 
 type AuthReponse = {
   token: ?string;
+  retry_token: ?string;
 }
 
 const tokenKey = 'token';
 
 export class Auth {
 
-  userToken: ?string;
   appToken: string;
   _host: string;
 
   constructor(host: string) {
     this._host = host;
-    this._loadFromStorage();
   }
 
-  _loadFromStorage() {
-    this.userToken = localStorage.getItem(tokenKey);
-    if (this.userToken === 'null') {
-      this.userToken = null;
-    }
-  }
-
-  _storeIntoStorage() {
-    if (this.userToken != null) {
-      localStorage.setItem(tokenKey, this.userToken);
-    } else {
-      localStorage.removeItem(tokenKey);
-    }
-  }
-
-  isAuthorized(): bool {
-    return this.userToken != null;
-  }
-
-  deauthorize() {
-    this.userToken = null;
-    this._storeIntoStorage();
-  }
-
-  loginWithCredentials(email: string, password: string, completion: (token: ?string, success: bool)=>void) {
+  loginWithCredentials(email: string, password: string, completion: (token: ?string, retryToken: ?string, errorCode: ?number)=>void) {
     let data = {
       identity: {
         email: email
@@ -57,7 +32,7 @@ export class Auth {
     this.login(data, completion);
   }
 
-  loginWithOnboardingToken(onboardingToken: string, completion: (token: ?string, success: bool)=>void) {
+  loginWithOnboardingToken(onboardingToken: string, completion: (token: ?string, retryToken: ?string, errorCode: ?number)=>void) {
     let data = {
       secret: {
         onboarding_token: onboardingToken
@@ -66,7 +41,18 @@ export class Auth {
     this.login(data, completion);
   }
 
-  login(data: Object, completion: (token: ?string, success: bool)=>void) {
+  loginWithRetryToken(retryToken: string, completion: (token: ?string, errorCode: ?number)=>void) {
+    let data = {
+      identity: {
+        retry_token: retryToken
+      }
+    };
+    this.login(data, (token: ?string, retryToken: ?string, errorCode: ?number)=>{
+      completion(token, errorCode)
+    });
+  }
+
+  login(data: Object, completion: (token: ?string, retryToken: ?string, errorCode: ?number)=>void) {
     let options = {
       method: 'POST',
       body: JSON.stringify(data),
@@ -75,7 +61,7 @@ export class Auth {
         'X-App-Token': this.appToken
       }
     };
-    let url = this._host + '/users/request-token';
+    let url = this._host + '/sessions/create';
 
     fetch(url, options)
       .then((response: Object): Object => {
@@ -89,13 +75,37 @@ export class Auth {
         return data.json();
       })
       .then((response: AuthReponse) => {
-        this.userToken = response.token;
-        this._storeIntoStorage();
-        completion(this.userToken, true);
+        completion(response.token, response.retry_token, null);
+      },
+      (error: Object) => {
+        console.log(error)
+        completion(null, null, error.status);
+      });
+  }
+
+  logout(completion: (success: bool)=>void) {
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-App-Token': this.appToken
+      }
+    };
+    let url = this._host + '/sessions/invalidate';
+
+    fetch(url, options)
+      .then((response: Object): Object => {
+        if (response.status < 200 || response.status >= 300) {
+          throw response;
+        } else {
+          return response;
+        }
+      })
+      .then((data: any) => {
+        completion(true);
       },
       () => {
-        this.userToken = null;
-        completion(null, false);
+        completion(false);
       });
   }
 
