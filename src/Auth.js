@@ -77,8 +77,8 @@ export class Auth {
           return response;
         }
       })
-      .then((data: any): AuthResponse => {
-        return data.json();
+      .then((response: Object): ?Object => {
+        return response.json();
       })
   }
 
