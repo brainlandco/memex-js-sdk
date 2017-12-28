@@ -83,52 +83,47 @@ export class Spaces {
    *
    * @param string email: Users unique email
    * @param string password: Users secret password
-   * @param Object completion: Completion function that returns user token andd success flag
    */
-  loginWithCredentials(email: string,
-                       password: string,
-                       completion: (token: ?string, retryToken: ?string, errorCode: ?number) => void) {
+  loginWithCredentials(email: string, password: string): ?Promise {
     if (!this._isConfigured()) {
-      return;
+      return null;
     }
-    this._auth.loginWithCredentials(email, password, completion);
+    return this._auth.loginWithCredentials(email, password);
   }
 
   /**
    * Login user using onboarding token
    *
    * @param string onboardingToken: Onboarding token
-   * @param Object completion: Completion function that returns user token andd success flag
    */
-  loginWithOnboardingToken(onboardingToken: string,
-                           completion: (token: ?string, retryToken: ?string, errorCode: ?number) => void) {
+  loginWithOnboardingToken(onboardingToken: string): ?Promise {
     if (!this._isConfigured()) {
-      return;
+      return null;
     }
-    this._auth.loginWithOnboardingToken(onboardingToken, completion);
+    return this._auth.loginWithOnboardingToken(onboardingToken);
   }
 
   /**
    * Login user using two factor authorization retry token
    *
    * @param string retryToken: TFA retry token
-   * @param Object completion: Completion function that returns user token andd success flag
+   * @param string activationToken: TFA activation code
    */
-  loginWithRetryToken(retryToken: string, completion: (token: ?string, errorCode: ?number) => void) {
+  loginWithRetryToken(retryToken: string, activationToken: ?string): ?Promise {
     if (!this._isConfigured()) {
-      return;
+      return null;
     }
-    this._auth.loginWithRetryToken(retryToken, completion);
+    return this._auth.loginWithRetryToken(retryToken, activationToken);
   }
 
   /**
    * Logout user. Removes user token from local storage.
    */
-  logout(completion: (success: bool)=>void) {
+  logout(all: bool): ?Promise {
     if (!this._isConfigured()) {
-      return;
+      return null;
     }
-    this._auth.logout(completion);
+    return this._auth.logout(all);
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -147,7 +142,7 @@ export class Spaces {
       media: media.toJSON(),
     };
     this._perform(methods.POST,
-                  'media',
+                  'teams/personal/media',
                   null,
                   body,
                   (json: ?Object, success: bool) => {
@@ -170,7 +165,7 @@ export class Spaces {
   getMedia(mediaMUID: string, completion: (media: ?Media, success: bool)=>void) {
     this._perform(
       methods.GET,
-      'media/'+mediaMUID,
+      'teams/personal/media/'+mediaMUID,
       null,
       null,
       (json: ?Object, success: bool) => {
@@ -193,7 +188,7 @@ export class Spaces {
   markMediaAsUploaded(mediaMUID: string, completion: (success: bool)=>void) {
     this._perform(
       methods.POST,
-      'media/'+mediaMUID+'/mark-as-uploaded',
+      'teams/personal/media/'+mediaMUID+'/mark-as-uploaded',
       null,
       null,
       (json: ?Object, success: bool) => {
@@ -311,7 +306,7 @@ export class Spaces {
       autodump: autodump
     };
     this._perform(methods.POST,
-                  'spaces',
+                  'teams/personal/spaces',
                   null,
                   body,
                   (json: ?Object, success: bool) => {
@@ -334,7 +329,7 @@ export class Spaces {
   getSpace(spaceMUID: string, completion: (space: ?Space, success: bool)=>void) {
     this._perform(
       methods.GET,
-      'spaces/'+spaceMUID,
+      'teams/personal/spaces/'+spaceMUID,
       null,
       null,
       (json: ?Object, success: bool) => {
@@ -362,7 +357,7 @@ export class Spaces {
     };
     this._perform(
       methods.POST,
-      'spaces/log-visits',
+      'teams/personal/spaces/log-visits',
       null,
       body,
       (json: ?Object, success: bool) => {
@@ -386,7 +381,7 @@ export class Spaces {
     };
     this._perform(
       methods.POST,
-      'spaces/abstract',
+      'teams/personal/spaces/abstract',
       null,
       body,
       (json: ?Object, success: bool) => {
@@ -414,7 +409,7 @@ export class Spaces {
       link: link.toJSON(),
     };
     this._perform(methods.POST,
-                  'links',
+                  'teams/personal/links',
                   null,
                   body,
                   (json: ?Object, success: bool) => {
@@ -436,7 +431,7 @@ export class Spaces {
    */
   getSpaceLinks(spaceMUID: string,
                 completion: (links: ?Array<Link>, success: bool)=>void) {
-    let path = 'spaces/'+spaceMUID+'/links';
+    let path = 'teams/personal/spaces/'+spaceMUID+'/links';
     let query = {
       includeTarget: true
     };

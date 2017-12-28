@@ -49,6 +49,9 @@ export class Auth {
     let data = {
       identity: {
         retry_token: retryToken
+      },
+      secret: {
+        activation_token: activationToken
       }
     };
     return this.login(data);
