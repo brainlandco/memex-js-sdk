@@ -4,12 +4,16 @@ import 'whatwg-fetch';
 
 import type { Configuration } from './data/Types.js';
 
-type AuthReponse = {
-  token: ?string;
+type AuthResponse = {
   retry_token: ?string;
+  type: ?string;
+  activation_token_expires_at: ?DateTime;
 }
 
-const tokenKey = 'token';
+type MFAChallange = {
+  token: ?string;
+  mfa: ?MFAChallange;
+}
 
 export class Auth {
 
@@ -20,7 +24,7 @@ export class Auth {
     this._host = host;
   }
 
-  loginWithCredentials(email: string, password: string, completion: (token: ?string, retryToken: ?string, errorCode: ?number)=>void) {
+  loginWithCredentials(email: string, password: string): Promise {
     let data = {
       identity: {
         email: email
@@ -29,30 +33,28 @@ export class Auth {
         password: password
       }
     };
-    this.login(data, completion);
+    return this.login(data);
   }
 
-  loginWithOnboardingToken(onboardingToken: string, completion: (token: ?string, retryToken: ?string, errorCode: ?number)=>void) {
+  loginWithOnboardingToken(onboardingToken: string): Promise {
     let data = {
       secret: {
         onboarding_token: onboardingToken
       }
     };
-    this.login(data, completion);
+    return this.login(data);
   }
 
-  loginWithRetryToken(retryToken: string, completion: (token: ?string, errorCode: ?number)=>void) {
+  loginWithTFARetryToken(retryToken: string, activationToken: string?): Promise {
     let data = {
       identity: {
         retry_token: retryToken
       }
     };
-    this.login(data, (token: ?string, retryToken: ?string, errorCode: ?number)=>{
-      completion(token, errorCode)
-    });
+    return this.login(data);
   }
 
-  login(data: Object, completion: (token: ?string, retryToken: ?string, errorCode: ?number)=>void) {
+  login(data: Object): Promise {
     let options = {
       method: 'POST',
       body: JSON.stringify(data),
@@ -64,7 +66,7 @@ export class Auth {
     };
     let url = this._host + '/sessions/create';
 
-    fetch(url, options)
+    return fetch(url, options)
       .then((response: Object): Object => {
         if (response.status < 200 || response.status >= 300) {
           throw response;
@@ -72,19 +74,12 @@ export class Auth {
           return response;
         }
       })
-      .then((data: any): AuthReponse => {
+      .then((data: any): AuthResponse => {
         return data.json();
       })
-      .then((response: AuthReponse) => {
-        completion(response.token, response.retry_token, null);
-      },
-      (error: Object) => {
-        console.log(error)
-        completion(null, null, error.status);
-      });
   }
 
-  logout(completion: (success: bool)=>void) {
+  logout(all: bool): Promise {
     let options = {
       method: 'POST',
       headers: {
@@ -93,9 +88,9 @@ export class Auth {
       },
       credentials: 'include'
     };
-    let url = this._host + '/sessions/invalidate';
-
-    fetch(url, options)
+    let path = all ? 'sessions/invalidate' : 'sessions/current/invalidate';
+    let url = this._host + path;
+    return fetch(url, options)
       .then((response: Object): Object => {
         if (response.status < 200 || response.status >= 300) {
           throw response;
@@ -103,12 +98,6 @@ export class Auth {
           return response;
         }
       })
-      .then((data: any) => {
-        completion(true);
-      },
-      () => {
-        completion(false);
-      });
   }
 
 }
