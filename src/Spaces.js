@@ -88,7 +88,6 @@ export class Spaces {
     if (!this._isConfigured()) {
       return null;
     }
-    console.log("loginWithCredentials")
     return this._auth.loginWithCredentials(email, password);
   }
 
