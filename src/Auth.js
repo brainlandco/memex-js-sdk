@@ -45,7 +45,7 @@ export class Auth {
     return this.login(data);
   }
 
-  loginWithTFARetryToken(retryToken: string, activationToken: string?): Promise {
+  loginWithTFARetryToken(retryToken: string, activationToken: ?string): Promise {
     let data = {
       identity: {
         retry_token: retryToken
