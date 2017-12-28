@@ -33,6 +33,7 @@ export class Auth {
         password: password
       }
     };
+    console.log(data)
     return this.login(data);
   }
 
@@ -71,6 +72,7 @@ export class Auth {
 
     return fetch(url, options)
       .then((response: Object): Object => {
+        console.log(response)
         if (response.status < 200 || response.status >= 300) {
           throw response;
         } else {
@@ -78,6 +80,8 @@ export class Auth {
         }
       })
       .then((response: Object): ?Object => {
+        console.log(response)
+        console.log(response.json())
         return response.json();
       })
   }
