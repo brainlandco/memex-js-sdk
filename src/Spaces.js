@@ -849,8 +849,12 @@ export class Spaces {
           return response;
         }
       })
-      .then((data: any): Object => {
-        return data.json();
+      .then((response: any): Object => {
+        if (response.status == 204) {
+          completion(null, true);
+          return null;
+        }
+        return response.json();
       })
       .then((response: Object) => {
         completion(response, true);
