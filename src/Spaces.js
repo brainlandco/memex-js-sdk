@@ -113,7 +113,7 @@ export class Spaces {
     if (!this._isConfigured()) {
       return null;
     }
-    return this._auth.loginWithRetryToken(retryToken, activationToken);
+    return this._auth.loginWithTFARetryToken(retryToken, activationToken);
   }
 
   /**
