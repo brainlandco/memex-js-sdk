@@ -138,11 +138,10 @@ export class Spaces {
    */
   createMedia(media: Media,
               completion: (media: ?Media, success: bool) => void) {
-    let body = {
-      media: media.toJSON(),
-    };
+    let body = media.toJSON();
     this._perform(methods.POST,
                   'teams/personal/media',
+                  null,
                   null,
                   body,
                   (json: ?Object, success: bool) => {
@@ -168,6 +167,7 @@ export class Spaces {
       'teams/personal/media/'+mediaMUID,
       null,
       null,
+      null,
       (json: ?Object, success: bool) => {
         if (success === false || json == null) {
           completion(null, false);
@@ -189,6 +189,7 @@ export class Spaces {
     this._perform(
       methods.POST,
       'teams/personal/media/'+mediaMUID+'/mark-as-uploaded',
+      null,
       null,
       null,
       (json: ?Object, success: bool) => {
@@ -300,15 +301,15 @@ export class Spaces {
               process: SpaceProcessingMode,
               autodump: bool,
               completion: (space: ?Space, success: bool) => void) {
-    let body = {
-      space: space.toJSON(),
-      process: process,
-      autodump: autodump
+    let headers = {
+      'X-Processing-Mode': process,
+      'X-Autodump-Mode': autodump
     };
     this._perform(methods.POST,
                   'teams/personal/spaces',
                   null,
-                  body,
+                  headers,
+                  [space.toJSON()],
                   (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
@@ -330,6 +331,7 @@ export class Spaces {
     this._perform(
       methods.GET,
       'teams/personal/spaces/'+spaceMUID,
+      null,
       null,
       null,
       (json: ?Object, success: bool) => {
@@ -359,6 +361,7 @@ export class Spaces {
       methods.POST,
       'teams/personal/spaces/log-visits',
       null,
+      null,
       body,
       (json: ?Object, success: bool) => {
         if (success === false || json == null) {
@@ -382,6 +385,7 @@ export class Spaces {
     this._perform(
       methods.POST,
       'teams/personal/spaces/abstract',
+      null,
       null,
       body,
       (json: ?Object, success: bool) => {
@@ -411,6 +415,7 @@ export class Spaces {
     this._perform(methods.POST,
                   'teams/personal/links',
                   null,
+                  null,
                   body,
                   (json: ?Object, success: bool) => {
       if (success === false || json == null) {
@@ -435,7 +440,7 @@ export class Spaces {
     let query = {
       include_target: true
     };
-    this._perform(methods.GET, path, query, null, (json: ?Object, success: bool) => {
+    this._perform(methods.GET, path, query, null, null, (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -464,7 +469,7 @@ export class Spaces {
     let body = {
       app: app.toJSON(),
     };
-    this._perform(methods.POST, 'apps', null, body, (json: ?Object, success: bool) => {
+    this._perform(methods.POST, 'apps', null, null, body, (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -483,6 +488,7 @@ export class Spaces {
    */
   getApp(id: number, completion: (app: ?App, success: bool) => void) {
     this._perform(methods.GET, 'apps/'+id,
+                  null,
                   null,
                   null,
                   (json: ?Object, success: bool) => {
@@ -514,6 +520,7 @@ export class Spaces {
     this._perform(methods.POST,
                   'apps/'+app.id,
                   null,
+                  null,
                   body,
                   (json: ?Object, success: bool) => {
       if (success === false || json == null) {
@@ -536,6 +543,7 @@ export class Spaces {
     this._perform(methods.POST,
                   'apps/'+appID+"/renew-token",
                   null,
+                  null,
                   {},
                   (json: ?Object, success: bool) => {
       if (success === false || json == null) {
@@ -555,7 +563,7 @@ export class Spaces {
    */
   getApps(completion: (apps: ?Array<App>, success: bool)=>void) {
     let path = 'apps';
-    this._perform(methods.GET, path, {}, null, (json: ?Object, success: bool) => {
+    this._perform(methods.GET, path, {}, null, null, (json: ?Object, success: bool) => {
       if (success === false || json == null) {
         completion(null, false);
         return;
@@ -589,6 +597,7 @@ export class Spaces {
     this._perform(methods.POST,
                   'users',
                   null,
+                  null,
                   body,
                   (json: ?Object, success: bool) => {
       if (success === false || json == null) {
@@ -609,6 +618,7 @@ export class Spaces {
    */
   getUser(userID: ?number, completion: (user: ?User, success: bool) => void) {
     this._perform(methods.GET, 'users/' + (userID == null ? 'self' : userID),
+                  null,
                   null,
                   null,
                   (json: ?Object, success: bool) => {
@@ -634,6 +644,7 @@ export class Spaces {
     };
     this._perform(methods.POST,
                   'users/self',
+                  null,
                   null,
                   body,
                   (json: ?Object, success: bool) => {
@@ -664,6 +675,7 @@ export class Spaces {
     this._perform(methods.POST,
                   'users/self/change-password',
                   null,
+                  null,
                   body,
                   (json: ?Object, success: bool) => {
       if (success === false) {
@@ -688,6 +700,7 @@ export class Spaces {
     };
     this._perform(methods.POST,
                   'users/self/request-password-reset',
+                  null,
                   null,
                   body,
                   (json: ?Object, success: bool) => {
@@ -716,6 +729,7 @@ export class Spaces {
     this._perform(methods.POST,
                   'users/self/reset-password',
                   null,
+                  null,
                   body,
                   (json: ?Object, success: bool) => {
       if (success === false) {
@@ -740,6 +754,7 @@ export class Spaces {
     };
     this._perform(methods.POST,
                   'users/self/contacts/request-verification',
+                  null,
                   null,
                   body,
                   (json: ?Object, success: bool) => {
@@ -768,6 +783,7 @@ export class Spaces {
     this._perform(methods.POST,
                   'users/self/contacts/verify',
                   null,
+                  null,
                   body,
                   (json: ?Object, success: bool) => {
       if (success === false) {
@@ -792,6 +808,7 @@ export class Spaces {
     this._perform(methods.POST,
                   'sessions/mfa-activate',
                   null,
+                  null,
                   body,
                   (json: ?Object, success: bool) => {
       if (success === false) {
@@ -806,16 +823,16 @@ export class Spaces {
   // Shared
   //////////////////////////////////////////////////////////////////////
 
-  _perform(method: Method, path: string, query: ?Object, body: ?Object,
+  _perform(method: Method, path: string, query: ?Object, headers: ?Object, body: ?Object,
            completion: (json: ?Object, success: bool) => void) {
     if (!this._isConfigured()) {
       return;
     }
-
-    let headers: Object = {
-      'Content-Type': 'application/json',
-      'X-App-Token': this._configuration.appToken
+    if (headers == null) {
+      headers = {};
     }
+    headers['Content-Type'] = 'application/json';
+    headers['X-App-Token'] = this._configuration.appToken;
     if (this._auth.userToken != null) {
       headers['X-User-Token'] = this._auth.userToken;
     }

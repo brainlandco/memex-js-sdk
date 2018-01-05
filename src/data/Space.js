@@ -132,7 +132,6 @@ export default class Space {
         return media.toJSON();
       });
     }
-    json.unread = this.unread;
     return json;
   }
 }

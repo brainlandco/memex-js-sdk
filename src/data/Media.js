@@ -159,7 +159,7 @@ export default class Media {
     json.state = this.state;
     json.owner_id = this.ownerID;
     json.metadata = this.metadata;
-    json.type = this.mediaType;
+    json.tag = this.mediaType;
     json.data_state = this.dataState;
     json.embeded_data = this.base64EmbedData();
     json.data_download_url = this.dataDownloadURL;
