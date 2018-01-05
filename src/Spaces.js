@@ -790,7 +790,7 @@ export class Spaces {
       activation_token: activationToken,
     };
     this._perform(methods.POST,
-                  'sessions/activate',
+                  'sessions/mfa-activate',
                   null,
                   body,
                   (json: ?Object, success: bool) => {
