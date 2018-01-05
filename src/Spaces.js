@@ -316,7 +316,7 @@ export class Spaces {
         return;
       }
       let space = new Space();
-      space.fromJSON(json);
+      space.fromJSON(json[0]);
       completion(space, true);
     });
   }
