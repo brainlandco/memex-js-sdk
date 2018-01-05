@@ -135,7 +135,7 @@ export default class Media {
     this.state = json.state;
     this.ownerID = json.owner_id;
     this.metadata = json.metadata;
-    this.mediaType = json.type;
+    this.mediaType = json.tag;
     this.dataState = json.data_state;
     if (json.embeded_data != null) {
       this.setEmbedDataFromBase64(json.embeded_data);

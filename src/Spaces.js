@@ -151,7 +151,7 @@ export class Spaces {
         return;
       }
       let media = new Media();
-      media.fromJSON(json.media);
+      media.fromJSON(json);
       completion(media, true);
     });
   }
@@ -174,7 +174,7 @@ export class Spaces {
           return;
         }
         let media = new Media();
-        media.fromJSON(json.media);
+        media.fromJSON(json);
         completion(media, true);
       });
   }
@@ -315,7 +315,7 @@ export class Spaces {
         return;
       }
       let space = new Space();
-      space.fromJSON(json.space);
+      space.fromJSON(json);
       completion(space, true);
     });
   }
@@ -338,7 +338,7 @@ export class Spaces {
           return;
         }
         let space = new Space();
-        space.fromJSON(json.space);
+        space.fromJSON(json);
         completion(space, true);
       });
   }
@@ -418,7 +418,7 @@ export class Spaces {
         return;
       }
       let link = new Link();
-      link.fromJSON(json.link);
+      link.fromJSON(json);
       completion(link, true);
     });
   }
@@ -433,7 +433,7 @@ export class Spaces {
                 completion: (links: ?Array<Link>, success: bool)=>void) {
     let path = 'teams/personal/spaces/'+spaceMUID+'/links';
     let query = {
-      includeTarget: true
+      include_target: true
     };
     this._perform(methods.GET, path, query, null, (json: ?Object, success: bool) => {
       if (success === false || json == null) {
@@ -441,7 +441,7 @@ export class Spaces {
         return;
       }
       let links = [];
-      for (let item of json.links) {
+      for (let item of json) {
         let link = new Link();
         link.fromJSON(item);
         links.push(link);
@@ -470,7 +470,7 @@ export class Spaces {
         return;
       }
       let newApp = new App();
-      newApp.fromJSON(json.app);
+      newApp.fromJSON(json);
       completion(newApp, true);
     });
   }
@@ -491,7 +491,7 @@ export class Spaces {
         return;
       }
       let newApp = new App();
-      newApp.fromJSON(json.app);
+      newApp.fromJSON(json);
       completion(newApp, true);
     });
   }
@@ -521,7 +521,7 @@ export class Spaces {
         return;
       }
       let newApp = new App();
-      newApp.fromJSON(json.app);
+      newApp.fromJSON(json);
       completion(newApp, true);
     });
   }
@@ -543,7 +543,7 @@ export class Spaces {
         return;
       }
       let newApp = new App();
-      newApp.fromJSON(json.app);
+      newApp.fromJSON(json);
       completion(newApp, true);
     });
   }
@@ -561,7 +561,7 @@ export class Spaces {
         return;
       }
       let apps = [];
-      for (let item of json.apps) {
+      for (let item of json) {
         let app = new App();
         app.fromJSON(item);
         apps.push(app);
@@ -596,7 +596,7 @@ export class Spaces {
         return;
       }
       let newUser = new User();
-      newUser.fromJSON(json.user);
+      newUser.fromJSON(json);
       completion(newUser, true);
     });
   }
@@ -617,7 +617,7 @@ export class Spaces {
         return;
       }
       let newUser = new User();
-      newUser.fromJSON(json.user);
+      newUser.fromJSON(json);
       completion(newUser, true);
     });
   }
@@ -642,7 +642,7 @@ export class Spaces {
         return;
       }
       let newUser = new User();
-      newUser.fromJSON(json.user);
+      newUser.fromJSON(json);
       completion(newUser, true);
     });
   }

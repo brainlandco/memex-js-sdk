@@ -96,8 +96,8 @@ export default class Space {
     this.state = json.state;
     this.ownerID = json.owner_id;
     this.spaceType = json.type_identifier;
-    this.caption = json.tag_label;
-    this.color = json.tag_color;
+    this.caption = json.caption;
+    this.color = json.color;
     if (json.representations != null) {
       this.representations = json.representations.map(function(json: Object): Media {
         let media = new Media();
@@ -125,8 +125,8 @@ export default class Space {
     json.state =  this.state;
     json.owner_id = this.ownerID;
     json.type_identifier = this.spaceType;
-    json.tag_label = this.caption;
-    json.tag_color = this.color;
+    json.caption = this.caption;
+    json.color = this.color;
     if (this.representations != null) {
       json.representations = this.representations.map(function(media: Media): Object {
         return media.toJSON();
